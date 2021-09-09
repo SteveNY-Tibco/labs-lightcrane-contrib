@@ -3,6 +3,6 @@ module github.com/SteveNY-Tibco/labs-lightcrane-contrib/activity/filewriter
 go 1.14
 
 require (
-	github.com/SteveNY-Tibco/labs-lightcrane-contrib/common/util v0.0.0-20210902164027-7811b469001a
+	github.com/SteveNY-Tibco/labs-lightcrane-contrib/common/util v0.0.0-20210909211602-274356ce0d46
 	github.com/TIBCOSoftware/flogo-lib v0.5.8
 )

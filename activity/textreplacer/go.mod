@@ -3,6 +3,6 @@ module github.com/SteveNY-Tibco/labs-lightcrane-contrib/activity/textreplacer
 go 1.14
 
 require (
-	github.com/SteveNY-Tibco/labs-lightcrane-contrib/common/util v0.0.0-20210902203451-f2ed6ba77f19
+	github.com/SteveNY-Tibco/labs-lightcrane-contrib/common/util v0.0.0-20210909211602-274356ce0d46
 	github.com/TIBCOSoftware/flogo-lib v0.5.8
 )
