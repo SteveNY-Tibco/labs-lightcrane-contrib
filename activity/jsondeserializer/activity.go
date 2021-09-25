@@ -16,7 +16,7 @@ import (
 )
 
 // activityLogger is the default logger for the Filter Activity
-var log = logger.GetLogger("activity-jsondeserializer")
+var log = logger.GetLogger("labs-lc-activity-jsondeserializer")
 
 const (
 	setting_DateFormat = "DateFormat"
@@ -45,18 +45,21 @@ func (a *JSONDeserializerActivity) Metadata() *activity.Metadata {
 // Eval implements api.Activity.Eval - Filters the Message
 func (a *JSONDeserializerActivity) Eval(ctx activity.Context) (done bool, err error) {
 
+	logger.Info("[JSONDeserializerActivity:Eval] entering ........ ")
+	defer logger.Info("[JSONDeserializerActivity:Eval] exit ........ ")
+
 	in := strings.TrimSpace(ctx.GetInput(input).(string))
 	var result interface{}
 	if strings.HasPrefix(in, "{") {
 		var rootObject interface{}
 		err = json.Unmarshal([]byte(in), &rootObject)
 		if nil != err {
-			logger.Warn("Unable to parse json data as object, reason : ", err.Error())
+			logger.Warn("[JSONDeserializerActivity:Eval] Unable to parse json data as object, reason : ", err.Error())
 			return false, nil
 		}
 		rootMap, ok := rootObject.(map[string]interface{})
 		if !ok {
-			logger.Warn("Unable to parse json data, reason : root object should be a map[string]interface{}")
+			logger.Warn("[JSONDeserializerActivity:Eval] Unable to parse json data, reason : root object should be a map[string]interface{}")
 			return false, nil
 		}
 		a.validate(ctx, rootMap)
@@ -65,14 +68,14 @@ func (a *JSONDeserializerActivity) Eval(ctx activity.Context) (done bool, err er
 		var rootArray []interface{}
 		err = json.Unmarshal([]byte(in), &rootArray)
 		if nil != err {
-			logger.Warn("Unable to parse json data as array, reason : ", err.Error())
+			logger.Warn("[JSONDeserializerActivity:Eval] Unable to parse json data as array, reason : ", err.Error())
 			return false, nil
 		}
 		result = rootArray
 	}
 
 	if nil == result {
-		logger.Warn("Unable to parse json data, reason : root object is nil")
+		logger.Warn("[JSONDeserializerActivity:Eval] Unable to parse json data, reason : root object is nil")
 		return false, nil
 	}
 
@@ -87,17 +90,17 @@ func (a *JSONDeserializerActivity) validate(ctx activity.Context, rootMap map[st
 	myId := util.ActivityId(ctx)
 	defaultValues, ok := ctx.GetSetting("defaultValue")
 	if !ok || nil == defaultValues {
-		log.Info("No default values set!!")
+		log.Warn("[JSONDeserializerActivity:Eval] No default values set!!")
 		defaultValues = make([]interface{}, 0)
 	}
 
 	for _, defaultValue := range defaultValues.([]interface{}) {
 		defaultValueMap := defaultValue.(map[string]interface{})
-		log.Debug("myId = ", myId, ", AttributePath = ", defaultValueMap["AttributePath"], ", Type = ", defaultValueMap["Type"], ", Default = ", defaultValueMap["Default"])
+		log.Debug("[JSONDeserializerActivity:Eval] myId = ", myId, ", AttributePath = ", defaultValueMap["AttributePath"], ", Type = ", defaultValueMap["Type"], ", Default = ", defaultValueMap["Default"])
 		attributePathElements := strings.Split(defaultValueMap["AttributePath"].(string), ".")
 		currentMap := rootMap
 
-		log.Debug("rootMap[] = ", rootMap)
+		log.Debug("[JSONDeserializerActivity:Eval] rootMap[] = ", rootMap)
 		for index, attributePathElement := range attributePathElements {
 			if index == (len(attributePathElements) - 1) {
 				/* the last element (attribute key) */
@@ -105,7 +108,7 @@ func (a *JSONDeserializerActivity) validate(ctx activity.Context, rootMap map[st
 					/* not exist then set to default */
 					currentMap[attributePathElement] = defaultValueMap["Default"]
 				}
-				log.Debug("currentMap[", attributePathElement, "] = ", currentMap[attributePathElement])
+				log.Debug("[JSONDeserializerActivity:Eval] currentMap[", attributePathElement, "] = ", currentMap[attributePathElement])
 			} else {
 				/* is a node not a leaf */
 				if nil == currentMap[attributePathElement] {
@@ -113,7 +116,7 @@ func (a *JSONDeserializerActivity) validate(ctx activity.Context, rootMap map[st
 					currentMap[attributePathElement] = make(map[string]interface{})
 				}
 				currentMap = currentMap[attributePathElement].(map[string]interface{})
-				log.Debug("currentMap[", attributePathElement, "] = ", currentMap)
+				log.Debug("[JSONDeserializerActivity:Eval] currentMap[", attributePathElement, "] = ", currentMap)
 			}
 		}
 	}

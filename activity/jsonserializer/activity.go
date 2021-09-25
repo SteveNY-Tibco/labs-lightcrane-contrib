@@ -13,7 +13,7 @@ import (
 	"github.com/TIBCOSoftware/flogo-lib/logger"
 )
 
-var log = logger.GetLogger("activity-jsondeserializer")
+var log = logger.GetLogger("labs-lc-activity-jsonserializer")
 
 const (
 	iData       = "Data"
@@ -37,16 +37,24 @@ func (a *JSONSerializerActivity) Metadata() *activity.Metadata {
 
 func (a *JSONSerializerActivity) Eval(ctx activity.Context) (done bool, err error) {
 
+	log.Info("[JSONSerializerActivity:Eval] entering ........ ")
+	defer log.Info("[JSONSerializerActivity:Eval] exit ........ ")
+
 	data, ok := ctx.GetInput(iData).(*data.ComplexObject).Value.(map[string]interface{})
+
+	log.Debug("[JSONSerializerActivity:Eval] data in : ", data)
+
 	if !ok {
-		log.Warn("No valid data ... ")
+		log.Warn("[JSONSerializerActivity:Eval] No valid data ... ")
 	}
 
 	jsondata, err := json.Marshal(data)
 	if nil != err {
-		logger.Warn("Unable to serialize object, reason : ", err.Error())
+		logger.Warn("[JSONSerializerActivity:Eval] Unable to serialize object, reason : ", err.Error())
 		return false, nil
 	}
+
+	log.Debug("[JSONSerializerActivity:Eval] json out : ", string(jsondata))
 
 	ctx.SetOutput(oJSONString, string(jsondata))
 

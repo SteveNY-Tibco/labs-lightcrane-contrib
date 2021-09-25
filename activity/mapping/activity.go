@@ -14,7 +14,7 @@ import (
 )
 
 // activityLogger is the default logger for the Filter Activity
-var log = logger.GetLogger("activity-mapping")
+var log = logger.GetLogger("labs-lc-activity-mapping")
 
 const (
 	input          = "Mapping"
@@ -48,8 +48,12 @@ func (a *Mapping) Metadata() *activity.Metadata {
 
 // Eval implements api.Activity.Eval - Filters the Message
 func (a *Mapping) Eval(ctx activity.Context) (done bool, err error) {
+
+	log.Info("[Mapping:Eval] entering ........ ")
+	defer log.Info("[Mapping:Eval] exit ........ ")
+
 	mappedTuple := ctx.GetInput(input).(map[string]interface{})
-	log.Debug("(Evale) mapped data = ", mappedTuple)
+	log.Debug("[Mapping.Evale] mapped data = ", mappedTuple)
 
 	isArray, exists := ctx.GetSetting(is_array)
 	if exists && isArray.(bool) {
@@ -58,7 +62,7 @@ func (a *Mapping) Eval(ctx activity.Context) (done bool, err error) {
 		delete(mappedTuple, array_size)
 		skipCondition := mappedTuple[skip_condition].(bool)
 		delete(mappedTuple, skip_condition)
-		log.Info("(Evale) skipCondition = ", skipCondition)
+		log.Info("[Mapping.Evale] skipCondition = ", skipCondition)
 		if !skipCondition {
 			mappedTuples.SetData(mappedTuple)
 		} else {

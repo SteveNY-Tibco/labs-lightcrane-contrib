@@ -7,15 +7,12 @@ package keywordreplace
 
 import (
 	"bytes"
-	//	"errors"
 	"fmt"
-	//	"strconv"
-	//	"strings"
-	//	"sync"
+
 	"github.com/TIBCOSoftware/flogo-lib/logger"
 )
 
-var log = logger.GetLogger("labs-flogo-lib.keywordreplace")
+var log = logger.GetLogger("labs-lc-keywordreplace")
 
 func Replace(input string, lefttoken string, righttoken string, keyword string, replacement string) string {
 	return NewKeywordMapper("", lefttoken, righttoken).Replace(input, map[string]interface{}{
@@ -90,6 +87,7 @@ func (this *KeywordMapper) Replace(template string, keywordMap map[string]interf
 	}
 
 	log.Debug("[KeywordMapper.replace] template = ", template)
+	log.Debug("[KeywordMapper.replace] keywordMap = ", keywordMap)
 
 	this.mh.setMap(keywordMap)
 	this.document.Reset()
@@ -102,7 +100,7 @@ func (this *KeywordMapper) Replace(template string, keywordMap map[string]interf
 
 	this.mh.startToMap()
 	for i := 0; i < len(template); i++ {
-		log.Debugf("template[%d] = ", i, template[i])
+		log.Debugf("[KeywordMapper.replace] template[%d] = ", i, template[i])
 		// maybe find a keyword beginning Tag - now isn't in a keyword
 		if !scope && template[i] == this.slefttag[0] {
 			if this.isATag(i, this.slefttag, template) {
@@ -135,7 +133,7 @@ func (this *KeywordMapper) Replace(template string, keywordMap map[string]interf
 			boundary = false
 		}
 
-		log.Debug("scope = ", scope, ", boundary = ", boundary, ", this.keyword = ", this.keyword, ", document = ", this.document)
+		log.Debug("[KeywordMapper.replace] scope = ", scope, ", boundary = ", boundary, ", this.keyword = ", this.keyword, ", document = ", this.document)
 		if i == len(template)-1 {
 			if true == scope {
 				this.document.WriteString(this.keyword.String())
