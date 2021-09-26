@@ -21,13 +21,15 @@ func (fnModifyObject) Sig() (paramTypes []data.Type, isVariadic bool) {
 }
 
 func (fnModifyObject) Eval(params ...interface{}) (interface{}, error) {
-	log.Debug("(fnModifyObject) params[0] object = ", params[0])
-	log.Info("(fnModifyObject) params[1] key = ", params[1])
-	log.Debug("(fnModifyObject) params[2] value = ", params[2])
+	log.Info("(fnModifyObject:Eval) entering ........")
+	log.Info("(fnModifyObject:Eval) exit ........")
+	log.Debug("(fnModifyObject:Eval) params[0] object = ", params[0])
+	log.Info("(fnModifyObject:Eval) params[1] key = ", params[1])
+	log.Debug("(fnModifyObject:Eval) params[2] value = ", params[2])
 
 	if nil == params[0] || nil == params[1] {
-		log.Warn("(fnModifyObject) params[0] >>>>>>>>>>", params[0])
-		log.Warn("(fnModifyObject) params[1] >>>>>>>>>>", params[1])
+		log.Warn("(fnModifyObject:Eval) please check params[0] : ", params[0])
+		log.Warn("(fnModifyObject:Eval) please check params[1] : ", params[1])
 		return params[0], nil
 	}
 
@@ -40,7 +42,7 @@ func (fnModifyObject) Eval(params ...interface{}) (interface{}, error) {
 		delete(object, key)
 	}
 
-	log.Debug("(fnModifyObject) modified object = ", object)
+	log.Debug("(fnModifyObject:Eval) modified object = ", object)
 
 	return object, nil
 }
