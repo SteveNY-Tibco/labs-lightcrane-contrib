@@ -69,10 +69,11 @@ func (a *HTTPClientActivity) Metadata() *activity.Metadata {
 func (a *HTTPClientActivity) Eval(context activity.Context) (done bool, err error) {
 
 	log.Info("[HTTPClientActivity:Eval] entering ........ ")
+	defer log.Info("[HTTPClientActivity:Eval] Exit ........ ")
 
 	skipCondition := context.GetInput(iSkipCondition).(bool)
 	if skipCondition {
-		log.Info("[HTTPClientActivity:Eval] Skip taks : ", skipCondition)
+		log.Debug("[HTTPClientActivity:Eval] Skip taks : ", skipCondition)
 		return true, nil
 	}
 
@@ -92,7 +93,7 @@ func (a *HTTPClientActivity) Eval(context activity.Context) (done bool, err erro
 		url = urlMapper[url]
 	}
 
-	log.Info("[HTTPClientActivity:Eval] url : ", url)
+	log.Debug("[HTTPClientActivity:Eval] url : ", url)
 
 	var success bool
 	var errorCode int
@@ -102,7 +103,7 @@ func (a *HTTPClientActivity) Eval(context activity.Context) (done bool, err erro
 		if !exist {
 			return false, errors.New("Query method not defined!")
 		}
-		log.Info("[HTTPClientActivity:Eval] Query method : ", method)
+		log.Debug("[HTTPClientActivity:Eval] Query method : ", method)
 
 		timeout := time.Millisecond * time.Duration(10000)
 		t, exist := context.GetSetting(sTimeout)
@@ -132,7 +133,7 @@ func (a *HTTPClientActivity) Eval(context activity.Context) (done bool, err erro
 			return false, errors.New("Query method not support!")
 		}
 		if nil != err {
-			log.Info("[HTTPClientActivity:Eval] Error : ", err.Error())
+			log.Debug("[HTTPClientActivity:Eval] Error : ", err.Error())
 			success = false
 			data = fmt.Sprintf("{\"Error\" : %s}", err.Error())
 			errorCode = 300
@@ -142,7 +143,7 @@ func (a *HTTPClientActivity) Eval(context activity.Context) (done bool, err erro
 			errorCode = 100
 		}
 	} else {
-		log.Info("[HTTPClientActivity:Eval] Error : No URL defined!")
+		log.Error("[HTTPClientActivity:Eval] Error : No URL defined!")
 		success = false
 		data = "{\"Error\" : \"No URL defined!\"}"
 		errorCode = 300
@@ -152,13 +153,12 @@ func (a *HTTPClientActivity) Eval(context activity.Context) (done bool, err erro
 	context.SetOutput(oData, data)
 	context.SetOutput(oErrorCode, errorCode)
 
-	log.Info("[HTTPClientActivity:Eval] Exit ........ ")
-
 	return true, nil
 }
 
 func (a *HTTPClientActivity) get(url string, header map[string]string, timeout time.Duration) ([]byte, error) {
-	log.Info("[HTTPClientActivity:get] request url = ", url)
+	log.Debug("[HTTPClientActivity:get] request url = ", url)
+	defer log.Debug("[HTTPClientActivity:get] exit ... ")
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		log.Error("[HTTPClientActivity:get] Error reading request. ", err)
@@ -183,14 +183,15 @@ func (a *HTTPClientActivity) get(url string, header map[string]string, timeout t
 		log.Error("[HTTPClientActivity:get] Error reading body. ", err)
 		return nil, err
 	}
-
-	log.Info("[HTTPClientActivity:get] response body = ", string(body))
+	defer log.Debug("[HTTPClientActivity:get] response body = ", string(body))
 
 	return body, nil
 }
 
 func (a *HTTPClientActivity) delete(url string, header map[string]string, timeout time.Duration) ([]byte, error) {
-	log.Info("[HTTPClientActivity:delete] request url = ", url)
+	log.Debug("[HTTPClientActivity:delete] enter, request url = ", url)
+	defer log.Debug("[HTTPClientActivity:delete] exit ... ")
+
 	req, err := http.NewRequest("DELETE", url, nil)
 	if err != nil {
 		log.Error("[HTTPClientActivity:get] Error reading request. ", err)
@@ -215,15 +216,16 @@ func (a *HTTPClientActivity) delete(url string, header map[string]string, timeou
 		log.Error("[HTTPClientActivity:delete] Error reading body. ", err)
 		return nil, err
 	}
-
-	log.Info("[HTTPClientActivity:delete] response body = ", string(body))
+	log.Debug("[HTTPClientActivity:delete] response body = ", string(body))
 
 	return body, nil
 }
 
 func (a *HTTPClientActivity) post(url string, header map[string]string, timeout time.Duration, data []byte) ([]byte, error) {
-	log.Info("[HTTPClientActivity:post] request url = ", url)
+	log.Debug("[HTTPClientActivity:post] request url = ", url)
 	log.Debug("[HTTPClientActivity:post] request body = ", string(data))
+	defer log.Debug("[HTTPClientActivity:post] exit ... ")
+
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(data))
 	if err != nil {
 		log.Error("[HTTPClientActivity:post] Error reading request. ", err)
@@ -250,23 +252,24 @@ func (a *HTTPClientActivity) post(url string, header map[string]string, timeout 
 	}
 	defer resp.Body.Close()
 
-	log.Info("[HTTPClientActivity:post] response Status:", resp.Status)
-	log.Info("[HTTPClientActivity:post] response Headers:", resp.Header)
+	log.Debug("[HTTPClientActivity:post] response Status:", resp.Status)
+	log.Debug("[HTTPClientActivity:post] response Headers:", resp.Header)
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Error("[HTTPClientActivity:post] Error reading body. ", err)
 		return nil, err
 	}
-
-	log.Info("[HTTPClientActivity:post] response body = ", string(body))
+	log.Debug("[HTTPClientActivity:post] response body = ", string(body))
 
 	return body, nil
 }
 
 func (a *HTTPClientActivity) put(url string, header map[string]string, timeout time.Duration, data []byte) ([]byte, error) {
-	log.Info("[HTTPClientActivity:put] request url = ", url)
+	log.Debug("[HTTPClientActivity:put] request url = ", url)
 	log.Debug("[HTTPClientActivity:put] request body = ", string(data))
+	defer log.Debug("[HTTPClientActivity:post] exit ... ")
+
 	req, err := http.NewRequest("PUT", url, bytes.NewBuffer(data))
 	if err != nil {
 		log.Error("[HTTPClientActivity:post] Error reading request. ", err)
@@ -293,8 +296,8 @@ func (a *HTTPClientActivity) put(url string, header map[string]string, timeout t
 	}
 	defer resp.Body.Close()
 
-	log.Info("[HTTPClientActivity:put] response Status:", resp.Status)
-	log.Info("[HTTPClientActivity:put] response Headers:", resp.Header)
+	log.Debug("[HTTPClientActivity:put] response Status:", resp.Status)
+	log.Debug("[HTTPClientActivity:put] response Headers:", resp.Header)
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
@@ -302,7 +305,7 @@ func (a *HTTPClientActivity) put(url string, header map[string]string, timeout t
 		return nil, err
 	}
 
-	log.Info("[HTTPClientActivity:put] response body = ", string(body))
+	log.Debug("[HTTPClientActivity:put] response body = ", string(body))
 
 	return body, nil
 }
@@ -318,7 +321,7 @@ func (a *HTTPClientActivity) getURLMapper(ctx activity.Context) (map[string]stri
 		if nil == mapper {
 			mapper = make(map[string]string)
 			urlsMapping, _ := ctx.GetSetting(sUrlMapping)
-			log.Info("[HTTPClientActivity:getURLMapper] Processing handlers : urlsMapping = ", urlsMapping)
+			log.Debug("[HTTPClientActivity:getURLMapper] Processing handlers : urlsMapping = ", urlsMapping)
 			if nil != urlsMapping {
 				for _, urlMapping := range urlsMapping.([]interface{}) {
 					urlMappingInfo := urlMapping.(map[string]interface{})
@@ -328,7 +331,7 @@ func (a *HTTPClientActivity) getURLMapper(ctx activity.Context) (map[string]stri
 			a.urlMappers[myId] = mapper
 		}
 	}
-	log.Info("[HTTPClientActivity:getURLMapper] mapper = ", mapper)
+	log.Debug("[HTTPClientActivity:getURLMapper] mapper = ", mapper)
 	return mapper, nil
 }
 
@@ -344,7 +347,7 @@ func (a *HTTPClientActivity) getVariableMapper(ctx activity.Context) (*kwr.Keywo
 		if nil == mapper {
 			variables = make(map[string]string)
 			variablesDef, _ := ctx.GetSetting(sVariablesDef)
-			log.Info("[HTTPClientActivity:getVariableMapper] variablesDef = ", variablesDef)
+			log.Debug("[HTTPClientActivity:getVariableMapper] variablesDef = ", variablesDef)
 			for _, variableDef := range variablesDef.([]interface{}) {
 				variableInfo := variableDef.(map[string]interface{})
 				variables[variableInfo["Name"].(string)] = variableInfo["Type"].(string)
@@ -379,14 +382,14 @@ func (a *HTTPClientActivity) getHeader(ctx activity.Context) (map[string]string,
 			fmt.Println(ctx)
 			header = make(map[string]string)
 			headersDef, _ := ctx.GetSetting(sHttpHeaders)
-			log.Info("[HTTPClientActivity:getheader] headersDef = ", headersDef)
+			log.Debug("[HTTPClientActivity:getheader] headersDef = ", headersDef)
 			if nil != headersDef {
 				for _, headerDef := range headersDef.([]interface{}) {
 					headerInfo := headerDef.(map[string]interface{})
 					header[headerInfo["Key"].(string)] = headerInfo["Value"].(string)
 				}
 			}
-			log.Info("[HTTPClientActivity:getheader] header = ", header)
+			log.Debug("[HTTPClientActivity:getheader] header = ", header)
 
 			a.header[myId] = header
 		}
