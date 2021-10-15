@@ -68,8 +68,8 @@ func (a *HTTPClientActivity) Metadata() *activity.Metadata {
 
 func (a *HTTPClientActivity) Eval(context activity.Context) (done bool, err error) {
 
-	log.Info("[HTTPClientActivity:Eval] entering ........ ")
-	defer log.Info("[HTTPClientActivity:Eval] Exit ........ ")
+	log.Debug("[HTTPClientActivity:Eval] entering ........ ")
+	defer log.Debug("[HTTPClientActivity:Eval] Exit ........ ")
 
 	skipCondition := context.GetInput(iSkipCondition).(bool)
 	if skipCondition {
