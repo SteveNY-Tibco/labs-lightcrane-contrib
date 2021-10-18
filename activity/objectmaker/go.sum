@@ -1,5 +1,4 @@
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
-github.com/SteveNY-Tibco/labs-lightcrane-contrib v0.0.0-20210909211602-274356ce0d46 h1:JYEfnW8G+9jGHBbS39tE4aXRM7lVQlc8DUg4naSWT4E=
 github.com/SteveNY-Tibco/labs-lightcrane-contrib/common/util v0.0.0-20210909211602-274356ce0d46 h1:etPwcwres4uYgHEc8kTcayrMI1WsJF+2EXtYnfx4tSc=
 github.com/SteveNY-Tibco/labs-lightcrane-contrib/common/util v0.0.0-20210909211602-274356ce0d46/go.mod h1:z0zOf2VBBhxv3rx+oixwEvLJfCqZFrxOjMgxMzlXbGw=
 github.com/TIBCOSoftware/flogo-lib v0.5.8 h1:JX6PcxtyJbya++sKiWhFRADA6UnkSRS/INuTPzOMF0Y=
