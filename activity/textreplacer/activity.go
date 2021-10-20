@@ -54,7 +54,8 @@ func (a *TextReplacer) Metadata() *activity.Metadata {
 // Eval implements api.Activity.Eval - Filters the Message
 func (a *TextReplacer) Eval(ctx activity.Context) (done bool, err error) {
 
-	log.Info("(TextReplacer.Eval) entering ..... ")
+	log.Debug("(TextReplacer.Eval) entering ..... ")
+	defer log.Debug("(TextReplacer.Eval) exit ..... ")
 
 	tokens, err := a.getTokens(ctx)
 	if nil != err {
@@ -72,7 +73,7 @@ func (a *TextReplacer) Eval(ctx activity.Context) (done bool, err error) {
 	mapper := NewKeywordMapper(inputDocument, tokens[0], tokens[1])
 	document := mapper.replace("", replacementMap)
 
-	log.Info("document = ", document)
+	log.Debug("document = ", document)
 
 	ctx.SetOutput(oOutputDocument, document)
 
@@ -82,7 +83,7 @@ func (a *TextReplacer) Eval(ctx activity.Context) (done bool, err error) {
 func (a *TextReplacer) getTokens(context activity.Context) ([]string, error) {
 	myId := util.ActivityId(context)
 	tokens := a.tokenMap[myId]
-	log.Info("tokenMap : ", a.tokenMap, ", myId : ", myId)
+	log.Debug("tokenMap : ", a.tokenMap, ", myId : ", myId)
 	if nil == tokens {
 		a.mux.Lock()
 		defer a.mux.Unlock()
@@ -178,7 +179,7 @@ func (this *KeywordMapper) replace(template string, keywordMap map[string]interf
 
 	this.mh.startToMap()
 	for i := 0; i < len(template); i++ {
-		//log.Infof("template[%d] = ", i, template[i])
+		//log.Debugf("template[%d] = ", i, template[i])
 		// maybe find a keyword beginning Tag - now isn't in a keyword
 		if !scope && template[i] == this.slefttag[0] {
 			if this.isATag(i, this.slefttag, template) {
@@ -194,7 +195,7 @@ func (this *KeywordMapper) replace(template string, keywordMap map[string]interf
 				if "" == svalue {
 					svalue = fmt.Sprintf("%s%s%s", this.slefttag, skeyword, this.srighttag)
 				}
-				//log.Info("value ->", svalue);
+				//log.Debug("value ->", svalue);
 				this.document.WriteString(svalue)
 				boundary = true
 				scope = false
