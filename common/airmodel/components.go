@@ -78,12 +78,12 @@ func (this DataSource) Build(subflowID string) {
 }
 
 func (this DataSource) BuildActivities(subflowID string) []interface{} {
-	//fmt.Println("$$$$$$$$$$", this.name)
+	//log.Debug("$$$$$$$$$$", this.name)
 	activities := make([]interface{}, 0)
 	for index, activity := range this.defaultActivities {
 		if index == len(this.defaultActivities)-1 {
 			previousActivityId := this.defaultActivities[index-1].(map[string]interface{})["id"]
-			//fmt.Println("$$$$$$$$$$$$$$$$$$$", previousActivityId)
+			//log.Debug("$$$$$$$$$$$$$$$$$$$", previousActivityId)
 			if "NewFlowData" == previousActivityId {
 				_ = objectbuilder.SetObject(this.subflowActivity, "root.settings.iterate", "=$activity[NewFlowData].Data.readings")
 				_ = objectbuilder.SetObject(this.subflowActivity, "root.activity.input.gateway", "=$activity[NewFlowData].Data.gateway")
@@ -210,8 +210,8 @@ func (this Notifier) Get(key string) interface{} {
 }
 
 func (this Notifier) GetTriggers(notifierID string, listeners map[string]interface{}) []interface{} {
-	fmt.Println("(Notifier.GetTriggers) ========== notifierID ->", notifierID)
-	fmt.Println("(Notifier.GetTriggers) ========== listeners ->", listeners)
+	log.Debug("(Notifier.GetTriggers) ========== notifierID ->", notifierID)
+	log.Debug("(Notifier.GetTriggers) ========== listeners ->", listeners)
 	triggers := util.DeepCopy(this.data["triggers"]).([]interface{})
 	for _, trigger := range triggers {
 		if nil != listeners[notifierID] {
@@ -322,19 +322,19 @@ func (this Logic) addNamespace4Properties(ID string) {
 }
 
 func (this Logic) Build(subflowID string, last bool) {
-	//fmt.Println("$$$$$$$$$$ name = ", this.name, ", subflow = ", subflowID, ", last = ", last)
+	//log.Debug("$$$$$$$$$$ name = ", this.name, ", subflow = ", subflowID, ", last = ", last)
 	var activities []interface{}
 	if !last {
 		activities = make([]interface{}, len(this.defaultActivities)+len(this.subflowActivities))
 		index := 0
 		for _, activity := range this.defaultActivities {
 			subflowActivities := this.subflowActivities[strconv.Itoa(index)]
-			//fmt.Println("$$$$$$$$$$$$$$$$$$$ index = ", index, ", subflowActivities = ", subflowActivities)
+			//log.Debug("$$$$$$$$$$$$$$$$$$$ index = ", index, ", subflowActivities = ", subflowActivities)
 			if nil != subflowActivities {
 				activities[index] = subflowActivities
 				if 0 < index {
 					previousActivityId := this.defaultActivities[index-1].(map[string]interface{})["id"].(string)
-					//fmt.Println("$$$$$$$$$$$$$$$$$$$", previousActivityId)
+					//log.Debug("$$$$$$$$$$$$$$$$$$$", previousActivityId)
 					if strings.HasPrefix(previousActivityId, "DataEmbedder") {
 						_ = objectbuilder.SetObject(subflowActivities.(map[string]interface{}), "root.activity.input.enriched", "=$activity[DataEmbedder].OutputDataCollection")
 					} else if strings.HasPrefix(previousActivityId, "NewFlowData") {
@@ -354,12 +354,12 @@ func (this Logic) Build(subflowID string, last bool) {
 		activities = this.defaultActivities
 	}
 
-	//fmt.Println("$$$$$$$$$$$$$$$$$$$ this.data02 = ", this.data["resources"].([]interface{})[0].(map[string]interface{})["data"])
+	//log.Debug("$$$$$$$$$$$$$$$$$$$ this.data02 = ", this.data["resources"].([]interface{})[0].(map[string]interface{})["data"])
 	links := objectbuilder.LocateObject(this.data, "root.resources[0].data.links[]").([]interface{})
 	if 0 == len(links) {
 		links := make([]interface{}, len(activities)-1)
 		for index, _ := range activities {
-			//fmt.Println(activities[index])
+			//log.Debug(activities[index])
 			if 0 != index {
 				links[index-1] = map[string]interface{}{
 					"id":   index,
@@ -430,7 +430,7 @@ func (this Logic) GetConnections() interface{} {
 }
 
 func FromFile(filename string) (map[string]interface{}, error) {
-	//fmt.Println(":::::::::", filename)
+	//log.Debug(":::::::::", filename)
 	fileContent, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err

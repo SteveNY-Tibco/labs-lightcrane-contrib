@@ -41,13 +41,13 @@ func (fnGetFStruct) Eval(params ...interface{}) (interface{}, error) {
 }
 
 func walk(filename string, currentDepth int, maxDepth int) []interface{} {
-	//fmt.Println("name ---> ", filename)
+	//log.Debug("name ---> ", filename)
 	result := make([]interface{}, 0)
 	if currentDepth <= maxDepth {
 		if stat, err := os.Stat(filename); err == nil {
 			switch mode := stat.Mode(); {
 			case mode.IsDir():
-				//fmt.Println("directory")
+				//log.Debug("directory")
 				files, _ := ioutil.ReadDir(filename)
 				for index := range files {
 					result = append(result, map[string]interface{}{

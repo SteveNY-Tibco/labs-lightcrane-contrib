@@ -69,9 +69,9 @@ func (this *Pipeline) Build() (string, error) {
 		this.imports.Add(logic.GetImports())
 		isListener := false
 		for _, listenerGroup := range this.listeners {
-			fmt.Println("(Pipeline.Build)  listenerGroup = ", listenerGroup)
+			log.Debug("(Pipeline.Build)  listenerGroup = ", listenerGroup)
 			for _, listener := range listenerGroup.([]interface{}) {
-				fmt.Println("(Pipeline.Build)    listener = ", listener)
+				log.Debug("(Pipeline.Build)    listener = ", listener)
 				if listener == logic.GetID() {
 					isListener = true
 				}
@@ -149,7 +149,7 @@ func (this *Pipeline) Build() (string, error) {
 	newPipeline := builder.Build(builder, this.data)
 	jsondata, err := json.Marshal(newPipeline)
 	if nil != err {
-		//fmt.Println("Unable to serialize object, reason : ", err.Error())
+		//log.Debug("Unable to serialize object, reason : ", err.Error())
 		return "", err
 	}
 	return string(jsondata), err

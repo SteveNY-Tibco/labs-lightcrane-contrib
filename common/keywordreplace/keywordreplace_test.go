@@ -12,10 +12,10 @@ import (
 )
 
 func TestKeywordreplace(t *testing.T) {
-	fmt.Println("Test entering .... ")
+	log.Info("Test entering .... ")
 	/*	fileContent, err := ioutil.ReadFile("./descriptor.json")
 		if err != nil {
-			fmt.Println("File reading error", err)
+			log.Debug("File reading error", err)
 			return
 		}
 	*/

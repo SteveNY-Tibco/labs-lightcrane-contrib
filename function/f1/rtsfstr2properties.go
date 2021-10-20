@@ -32,18 +32,21 @@ basket_id:abc-012345-def
 */
 
 func (fnRTSFString2Properties) Eval(params ...interface{}) (interface{}, error) {
-	fmt.Println("params[0] = ", params[0])
+	log.Debug("RTSFString2Properties.eval] entering ..... ")
+	defer log.Debug("RTSFString2Properties.eval] exit ..... ")
+
+	log.Debug("params[0] = ", params[0])
 	rtsfStr, ok1 := params[0].(string)
 	if !ok1 {
 		return nil, fmt.Errorf("Illegal parameter : RTSF string")
 	}
-	fmt.Println("rtsfStr = ", rtsfStr)
+	log.Debug("rtsfStr = ", rtsfStr)
 
 	propertyArray := strings.Split(rtsfStr, ",")
-	fmt.Println("propertyArray = ", propertyArray)
+	log.Debug("propertyArray = ", propertyArray)
 	properties := make(map[string]interface{})
 	for _, propertyStr := range propertyArray {
-		fmt.Println("propertyStr = ", propertyStr)
+		log.Debug("propertyStr = ", propertyStr)
 		if "" == propertyStr {
 			continue
 		}

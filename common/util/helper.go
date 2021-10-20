@@ -86,7 +86,6 @@ func TypeString(data interface{}) string {
 }
 
 func ConvertToInteger(data interface{}) (interface{}, error) {
-	//fmt.Println("Convert to Integer ....")
 	switch data.(type) {
 	case int:
 		return int32(data.(int)), nil
@@ -105,7 +104,6 @@ func ConvertToInteger(data interface{}) (interface{}, error) {
 }
 
 func ConvertToLong(data interface{}) (interface{}, error) {
-	//fmt.Println("Convert to Long ....")
 	switch data.(type) {
 	case int:
 		return int64(data.(int)), nil
@@ -124,8 +122,6 @@ func ConvertToLong(data interface{}) (interface{}, error) {
 }
 
 func ConvertToString(data interface{}, dateTimeSample string) (interface{}, error) {
-	//fmt.Println("Convert to String ....")
-
 	switch data.(type) {
 	case string:
 		return data, nil
@@ -166,7 +162,6 @@ func ConvertToString(data interface{}, dateTimeSample string) (interface{}, erro
 }
 
 func ConvertToDouble(data interface{}) (interface{}, error) {
-	//fmt.Println("Convert to Double ....")
 	switch data.(type) {
 	case int:
 		return float64(data.(int)), nil
@@ -183,7 +178,6 @@ func ConvertToDouble(data interface{}) (interface{}, error) {
 }
 
 func ConvertToBoolean(data interface{}) (interface{}, error) {
-	//fmt.Println("Convert to Boolean ....")
 	switch data.(type) {
 	case bool:
 		return data, nil
@@ -194,15 +188,12 @@ func ConvertToBoolean(data interface{}) (interface{}, error) {
 }
 
 func ConvertToDate(data interface{}, dateTimeSample string) (interface{}, error) {
-	//fmt.Println("Convert to Date ....")
 	switch data.(type) {
 	case time.Time:
 		return data, nil
 	case string:
-		//fmt.Println("parsing time string, template = ", dateTimeSample, ", datetime = ", data)
 		dateData, err := time.Parse(dateTimeSample, data.(string))
 		intDateData := dateData.Unix()
-		//fmt.Println("after parsing time string : ", intDateData, ", type : ", reflect.TypeOf(intDateData).String())
 		return intDateData, err
 	}
 	return data, fmt.Errorf("Unable to convert to Date : %s", reflect.TypeOf(data).String())
@@ -252,8 +243,6 @@ func StringToTypes(data string, dataType string, dateTimeSample string) (interfa
 
 func ToString(data interface{}, dataType string, dateTimeSample string) (string, error) {
 	golangTypeString := reflect.TypeOf(data).String()
-
-	//fmt.Println("data = ", data, ", dataType = ", dataType, ", golangTypeString = ", golangTypeString)
 
 	switch dataType {
 	case "String":
@@ -374,7 +363,6 @@ func GetValue(value string) string {
 func CopyMap(orig map[interface{}]interface{}, target map[string]interface{}) {
 	for key, value := range orig {
 		valueType := reflect.TypeOf(value).String()
-		//log.Debug("copyMap --- Key = ", key, ", val = ", value, ", value type = ", valueType)
 		switch valueType {
 		case "map[interface {}]interface {}":
 			subDeployment := make(map[string]interface{})
@@ -394,7 +382,6 @@ func CopyArray(orig []interface{}) []interface{} {
 	target := make([]interface{}, 0)
 	for _, element := range orig {
 		elementType := reflect.TypeOf(element).String()
-		//log.Debug("copyArray --- index = ", index, ", element = ", element, ", element type = ", elementType)
 		switch elementType {
 		case "map[interface {}]interface {}":
 			mapElement := element.(map[interface{}]interface{})
@@ -450,7 +437,6 @@ func GetPropertyValue(iValue interface{}, iDtype interface{}) (interface{}, stri
 func GetPropertyElementAsString(key string, property interface{}) string {
 	element := property.(map[string]interface{})[key]
 	if nil != element {
-		//fmt.Println("(f1.hepler.getPropertyElementAsString) before cast to string, element-key = ", key, ", element-value = ", element)
 		return element.(string)
 	}
 	return ""

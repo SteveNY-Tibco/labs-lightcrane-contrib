@@ -23,5 +23,5 @@ func TestBuildTemplates(t *testing.T) {
 			"MQTTTrigger.MaximumQOS":           "DataSource.MQTTTrigger.MaximumQOS",
 		})
 
-	fmt.Println("-------", result)
+	log.Debug("-------", result)
 }

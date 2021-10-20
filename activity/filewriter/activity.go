@@ -111,7 +111,7 @@ func (a *FileWriterActivity) Eval(context activity.Context) (done bool, err erro
 	}
 
 	for _, f := range files {
-		fmt.Println(f.Name())
+		log.Debug("(Eval) file : ", f.Name())
 	}
 
 	context.SetOutput(oFilename, outputFile)

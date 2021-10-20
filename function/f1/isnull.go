@@ -1,7 +1,7 @@
 package f1
 
 import (
-	"fmt"
+	//"fmt"
 
 	"github.com/project-flogo/core/data"
 	"github.com/project-flogo/core/data/expression/function"
@@ -23,6 +23,9 @@ func (fnIsNull) Sig() (paramTypes []data.Type, isVariadic bool) {
 }
 
 func (fnIsNull) Eval(params ...interface{}) (interface{}, error) {
-	fmt.Println(params[0])
+	log.Debug("IsNull.eval] entering ..... ")
+	defer log.Debug("IsNull.eval] exit ..... ")
+
+	log.Debug(params[0])
 	return (nil == params[0]), nil
 }

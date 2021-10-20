@@ -248,7 +248,7 @@ func (a *ExecActivity) getSysEnvs(ctx activity.Context) (map[string]string, erro
 		defer a.mux.Unlock()
 		sysEnvs = a.sysEnvs[myId]
 		if nil == sysEnvs {
-			fmt.Println(ctx)
+			log.Debug("[ExecActivity.getSysEnvs] activity.Context = ", ctx)
 			sysEnvs = make(map[string]string)
 			sysEnvsDef, _ := ctx.GetSetting(sSystemEnv)
 			log.Debug("[ExecActivity.getSysEnvs] sysEnvsDef = ", sysEnvsDef)

@@ -236,13 +236,9 @@ func (a *HTTPClientActivity) post(url string, header map[string]string, timeout 
 		req.Header.Set(key, value)
 	}
 
-	//cookie := http.Cookie{Name: "cookie_name", Value: "cookie_value"}
-	//req.AddCookie(&cookie)
-
 	client := &http.Client{Timeout: timeout}
 
-	//fmt.Println(req.Cookies())
-	fmt.Println(req.Header)
+	log.Debug("[HTTPClientActivity:post] request header = ", req.Header)
 
 	// Send request
 	resp, err := client.Do(req)
@@ -280,13 +276,9 @@ func (a *HTTPClientActivity) put(url string, header map[string]string, timeout t
 		req.Header.Set(key, value)
 	}
 
-	//cookie := http.Cookie{Name: "cookie_name", Value: "cookie_value"}
-	//req.AddCookie(&cookie)
-
 	client := &http.Client{Timeout: timeout}
 
-	//fmt.Println(req.Cookies())
-	fmt.Println(req.Header)
+	log.Debug("[HTTPClientActivity:post] request header = ", req.Header)
 
 	// Send request
 	resp, err := client.Do(req)
@@ -379,7 +371,7 @@ func (a *HTTPClientActivity) getHeader(ctx activity.Context) (map[string]string,
 		defer a.mux.Unlock()
 		header = a.header[myId]
 		if nil == header {
-			fmt.Println(ctx)
+			log.Debug("[HTTPClientActivity:getHeader] ractivity.Context = ", ctx)
 			header = make(map[string]string)
 			headersDef, _ := ctx.GetSetting(sHttpHeaders)
 			log.Debug("[HTTPClientActivity:getheader] headersDef = ", headersDef)

@@ -6,7 +6,7 @@
 package execeventbroker
 
 import (
-	"fmt"
+	//"fmt"
 	"sync"
 )
 
@@ -56,7 +56,7 @@ type EXEEventBroker struct {
 }
 
 func (this *EXEEventBroker) Start() {
-	fmt.Println("Start broker, EXEEventBroker : ", this)
+	//fmt.Println("Start broker, EXEEventBroker : ", this)
 }
 
 func (this *EXEEventBroker) Stop() {

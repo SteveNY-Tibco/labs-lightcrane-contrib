@@ -88,9 +88,9 @@ func (a *PipelineSpliterActivity) Eval(context activity.Context) (done bool, err
 		return false, err
 	}
 
-	fmt.Println("========================================")
+	log.Debug("[PipelineSpliterActivity:Eval] ========================================")
 	deployment, err := spliter.Split(appConfig)
-	fmt.Println("========================================")
+	log.Debug("[PipelineSpliterActivity:Eval] ========================================")
 	if nil != err {
 		return false, err
 	}
@@ -179,30 +179,30 @@ type PipelineConfig struct {
 
 func (this *PipelineConfig) MarshalJSON() ([]byte, error) {
 
-	fmt.Println("---  out Properties  --------")
-	fmt.Println(this.Properties)
-	fmt.Println("-------------------------")
+	log.Debug("---  out Properties  --------")
+	log.Debug(this.Properties)
+	log.Debug("-------------------------")
 
-	fmt.Println("---  out Contrib  --------")
-	fmt.Println(this.Contrib)
-	fmt.Println("-------------------------")
+	log.Debug("---  out Contrib  --------")
+	log.Debug(this.Contrib)
+	log.Debug("-------------------------")
 
 	ContribArray := make([]Contribute, 0)
 	for _, value := range this.Contrib {
 		ContribArray = append(ContribArray, value)
 	}
 
-	fmt.Println("---  out ContribArray  ---")
-	fmt.Println(ContribArray)
-	fmt.Println("--------------------------")
+	log.Debug("---  out ContribArray  ---")
+	log.Debug(ContribArray)
+	log.Debug("--------------------------")
 
 	this.MarshalResource()
 	ContribArrayBytes, _ := json.Marshal(ContribArray)
 	ContribArrayString := b64.URLEncoding.EncodeToString(ContribArrayBytes)
 
-	fmt.Println("---  out flogoContrib  ---")
-	fmt.Println(ContribArrayString)
-	fmt.Println("--------------------------")
+	log.Debug("---  out flogoContrib  ---")
+	log.Debug(ContribArrayString)
+	log.Debug("--------------------------")
 
 	return json.Marshal(&struct {
 		app.Config
@@ -225,19 +225,19 @@ func (this *PipelineConfig) UnmarshalJSON(data []byte) error {
 
 	this.Config = alias.Config
 
-	fmt.Println("---  in Config  -------->>>>>>")
-	fmt.Println(alias.Config)
-	fmt.Println("------------------------>>>>>>")
+	log.Debug("---  in Config  -------->>>>>>")
+	log.Debug(alias.Config)
+	log.Debug("------------------------>>>>>>")
 
-	fmt.Println("---  in Properties  --------")
-	fmt.Println(this.Properties)
-	fmt.Println("-------------------------")
+	log.Debug("---  in Properties  --------")
+	log.Debug(this.Properties)
+	log.Debug("-------------------------")
 
 	this.UnmarshalResource()
 
-	fmt.Println("---  in flogoContrib  ---")
-	fmt.Println(alias.ContribString)
-	fmt.Println("-------------------------")
+	log.Debug("---  in flogoContrib  ---")
+	log.Debug(alias.ContribString)
+	log.Debug("-------------------------")
 
 	contributeArrayString, _ := b64.StdEncoding.DecodeString(alias.ContribString)
 	contributeArray := make([]Contribute, 0)
@@ -247,20 +247,20 @@ func (this *PipelineConfig) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	fmt.Println("--- in contributeArray  ------")
-	fmt.Println(contributeArray)
-	fmt.Println("------------------------------")
+	log.Debug("--- in contributeArray  ------")
+	log.Debug(contributeArray)
+	log.Debug("------------------------------")
 
 	this.Contrib = make(map[string]Contribute)
 	for _, contrib := range contributeArray {
-		fmt.Println(contrib)
+		log.Debug(contrib)
 		this.Contrib[contrib.Ref] = contrib
-		fmt.Println(this.Contrib)
+		log.Debug(this.Contrib)
 	}
 
-	fmt.Println("---  in Contrib  --------")
-	fmt.Println(this.Contrib)
-	fmt.Println("-------------------------")
+	log.Debug("---  in Contrib  --------")
+	log.Debug(this.Contrib)
+	log.Debug("-------------------------")
 
 	return nil
 }
@@ -406,11 +406,11 @@ func (this *PipelineConfigSpliter) Split(aPipelineConfig *PipelineConfig) (*Depl
 
 		fmt.Print("  - Links : ")
 		for _, link := range aFlow.Links {
-			fmt.Println(link)
+			log.Debug(link)
 		}
 
 		fmt.Print("  - ErrorHandler : ")
-		fmt.Println(aFlow.ErrorHandler)
+		log.Debug(aFlow.ErrorHandler)
 	}
 
 	var upstream string

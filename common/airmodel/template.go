@@ -76,7 +76,7 @@ func (this *FlogoTemplateLibrary) GetComponentDescriptor(category string, name s
 }
 
 func NewFlogoTemplateLibrary(folder string) (*FlogoTemplateLibrary, error) {
-	//fmt.Println(folder)
+	//log.Debug(folder)
 	pipeline, err := NewPipeline("AirPipeline", fmt.Sprintf("%s/pipeline.json", folder))
 	if nil != err {
 		return nil, err

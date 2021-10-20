@@ -223,23 +223,20 @@ func createDockerF1Properties(
 	airProperties []interface{},
 	extraProperties []interface{},
 ) []interface{} {
-	//fmt.Println("-------------->", f1PropertiesMaster[0])
 
 	/* Get main configuration */
 	f1Properties := f1PropertiesMaster[0].(map[string]interface{})["Value"].([]interface{})
 	valueMap := make(map[string]interface{})
 	typeMap := make(map[string]string)
-	//fmt.Println("\n\n\n airProperties = ", airProperties)
 	for _, prop := range airProperties {
 		name := util.GetPropertyElementAsString("Name", prop)
 		value := util.GetPropertyElement("Value", prop)
 		dtype := util.GetPropertyElementAsString("Type", prop)
 		valueMap[name] = value
 		typeMap[name] = dtype
-		fmt.Println("name = ", name, ", value = ", value)
+		log.Debug("name = ", name, ", value = ", value)
 	}
 
-	//log.Info("(fnAir2F1Properties.Eval) out f1Properties before ========>", f1Properties)
 	/*
 		Update existing environment properties
 	*/
@@ -247,12 +244,11 @@ func createDockerF1Properties(
 	for _, prop := range f1Properties {
 		name := util.GetPropertyElementAsString("Name", prop)
 		value := util.GetPropertyElementAsString("Value", prop) // this is docker env got to be string
-		//dtype := util.GetPropertyElement("Type", prop)
 		if 0 == strings.Index(name, prefix+"[") {
 			pos := strings.Index(value, "=")
 			key := value[0:pos]
 			if nil != valueMap[key] {
-				fmt.Println("In update key = ", key, ", valueMap[key] = ", valueMap[key])
+				log.Debug("In update key = ", key, ", valueMap[key] = ", valueMap[key])
 				prop.(map[string]interface{})["Value"] = fmt.Sprintf("%s=%s", key, valueMap[key])
 				delete(valueMap, key)
 			}
@@ -261,7 +257,7 @@ func createDockerF1Properties(
 	}
 
 	for name, value := range valueMap {
-		fmt.Println("In add key = ", name, ", valueMap[key] = ", value)
+		log.Debug("In add key = ", name, ", valueMap[key] = ", value)
 		f1Properties = append(f1Properties, map[string]interface{}{
 			"Name":  fmt.Sprintf("%s[%d]", prefix, propIndex),
 			"Value": fmt.Sprintf("%s=%s", name, value),
@@ -292,8 +288,6 @@ func createDockerF1Properties(
 
 	/* Set main configuration back */
 	f1PropertiesMaster[0].(map[string]interface{})["Value"] = f1Properties
-	//log.Info("(fnAir2F1Properties.Eval) out f1Properties after ========>", f1Properties)
-	//log.Info("(fnAir2F1Properties.Eval) out f1Properties after ========>", f1PropertiesMaster)
 
 	return f1PropertiesMaster
 }

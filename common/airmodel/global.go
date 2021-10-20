@@ -37,7 +37,7 @@ func (this *Contributes) Add(contributes interface{}) {
 }
 
 func (this *Contributes) AddContributes(encodedContributeString string) {
-	//fmt.Println("encodedContributeString : " + encodedContributeString)
+	//log.Debug("encodedContributeString : " + encodedContributeString)
 	contributeString, _ := b64.URLEncoding.DecodeString(encodedContributeString)
 	var contributes interface{}
 	if err := json.Unmarshal([]byte(contributeString), &contributes); err != nil {
