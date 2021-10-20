@@ -12,7 +12,7 @@ import (
 )
 
 func TestKeywordreplace(t *testing.T) {
-	log.Info("Test entering .... ")
+	log.Debug("Test entering .... ")
 	/*	fileContent, err := ioutil.ReadFile("./descriptor.json")
 		if err != nil {
 			log.Debug("File reading error", err)
@@ -24,6 +24,6 @@ func TestKeywordreplace(t *testing.T) {
 	document := mapper.Replace("", map[string]interface{}{
 		"ContainerName": "XXXXXXXX",
 	})
-	log.Info("document = ", document)
+	log.Debug("document = ", document)
 
 }

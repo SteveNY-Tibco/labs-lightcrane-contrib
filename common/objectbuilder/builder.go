@@ -28,12 +28,12 @@ func (this FlogoBuilder) Build(handler GOLangObjectHandler, object interface{}) 
 }
 
 func (this FlogoBuilder) GetData() []map[string]interface{} {
-	log.Info("(FlogoBuilder.GetData) Should be overrided!!")
+	log.Debug("(FlogoBuilder.GetData) Should be overrided!!")
 	return nil
 }
 
 func (this FlogoBuilder) HandleElements(namespace ElementId, element interface{}, dataType interface{}) interface{} {
-	log.Info("(FlogoBuilder.HandleElements) Should be overrided!!")
+	log.Debug("(FlogoBuilder.HandleElements) Should be overrided!!")
 	return nil
 }
 
@@ -118,9 +118,9 @@ type StringReplaceHandler struct {
 
 func (this StringReplaceHandler) HandleElements(namespace ElementId, element interface{}, dataType interface{}) interface{} {
 	if "string" == dataType {
-		//log.Info(">>>>>>>> Handle : element = ", element, ", type = ", dataType, ", this.replacements[element = ", this.replacements)
+		//log.Debug(">>>>>>>> Handle : element = ", element, ", type = ", dataType, ", this.replacements[element = ", this.replacements)
 		if nil != this.replacements[element.(string)] {
-			//log.Info("XXXXXXXXXXXXXXXXX Handle : element = ", element, ", type = ", dataType, ", this.replacements[elemen = ", this.replacements[element.(string)])
+			//log.Debug("XXXXXXXXXXXXXXXXX Handle : element = ", element, ", type = ", dataType, ", this.replacements[elemen = ", this.replacements[element.(string)])
 			return this.replacements[element.(string)]
 		}
 	}

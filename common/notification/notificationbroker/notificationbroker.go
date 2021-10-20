@@ -35,8 +35,8 @@ func GetFactory() *NotificationBrokerFactory {
 }
 
 func (this *NotificationBrokerFactory) GetNotificationBroker(serverId string) *NotificationBroker {
-	log.Info("(NotificationBrokerFactory.GetNotificationBroker) Factory : ", instance)
-	log.Info("(NotificationBrokerFactory.GetNotificationBroker) EventBrokers : ", this.exeEventBrokers)
+	log.Debug("(NotificationBrokerFactory.GetNotificationBroker) Factory : ", instance)
+	log.Debug("(NotificationBrokerFactory.GetNotificationBroker) EventBrokers : ", this.exeEventBrokers)
 	return this.exeEventBrokers[serverId]
 }
 
@@ -53,8 +53,8 @@ func (this *NotificationBrokerFactory) CreateNotificationBroker(
 		listener: listener,
 	}
 	this.exeEventBrokers[brokerID] = broker
-	log.Info("(NotificationBrokerFactory.CreateNotificationBroker) Factory : ", instance)
-	log.Info("(NotificationBrokerFactory.CreateNotificationBroker) EventBrokers : ", this.exeEventBrokers)
+	log.Debug("(NotificationBrokerFactory.CreateNotificationBroker) Factory : ", instance)
+	log.Debug("(NotificationBrokerFactory.CreateNotificationBroker) EventBrokers : ", this.exeEventBrokers)
 
 	return broker, nil
 }
@@ -65,7 +65,7 @@ type NotificationBroker struct {
 }
 
 func (this *NotificationBroker) Start() {
-	log.Info("(NotificationBroker.Start) Start broker, NotificationBroker : ", this)
+	log.Debug("(NotificationBroker.Start) Start broker, NotificationBroker : ", this)
 }
 
 func (this *NotificationBroker) Stop() {
