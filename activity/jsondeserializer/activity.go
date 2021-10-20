@@ -45,8 +45,8 @@ func (a *JSONDeserializerActivity) Metadata() *activity.Metadata {
 // Eval implements api.Activity.Eval - Filters the Message
 func (a *JSONDeserializerActivity) Eval(ctx activity.Context) (done bool, err error) {
 
-	logger.Info("[JSONDeserializerActivity:Eval] entering ........ ")
-	defer logger.Info("[JSONDeserializerActivity:Eval] exit ........ ")
+	logger.Debug("[JSONDeserializerActivity:Eval] entering ........ ")
+	defer logger.Debug("[JSONDeserializerActivity:Eval] exit ........ ")
 
 	in := strings.TrimSpace(ctx.GetInput(input).(string))
 	var result interface{}
@@ -74,10 +74,9 @@ func (a *JSONDeserializerActivity) Eval(ctx activity.Context) (done bool, err er
 		result = rootArray
 	}
 
-	//	if nil == result {
-	logger.Warn("[JSONDeserializerActivity:Eval] Unable to parse json data, reason : root object is nil")
-	//		return false, nil
-	//	}
+	if nil == result {
+		logger.Warn("[JSONDeserializerActivity:Eval] Unable to parse json data, reason : root object is nil")
+	}
 
 	jsondata := &data.ComplexObject{Metadata: "Data", Value: result}
 
