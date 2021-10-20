@@ -44,12 +44,14 @@ func (a *ObjectSerializerActivity) Metadata() *activity.Metadata {
 }
 
 func (a *ObjectSerializerActivity) Eval(ctx activity.Context) (done bool, err error) {
+	log.Debug("[ObjectSerializerActivity:eval] entering ........ ")
+	defer log.Debug("[ObjectSerializerActivity:eval] exit ........ ")
 
 	dataGroups, ok := ctx.GetInput(iData).(map[string]interface{})
 	if !ok {
 		log.Warn("No valid data ... ")
 	}
-	fmt.Println(">>>>>>>>>1", dataGroups)
+	log.Debug(">>>>>>>>>1", dataGroups)
 
 	format, _ := ctx.GetSetting(sStringFormat)
 	var serializedData interface{}
@@ -92,7 +94,7 @@ func buildJSON(data map[string]interface{}) (interface{}, error) {
 }
 
 func buildYAML(dataGroups map[string]interface{}) (interface{}, error) {
-	fmt.Println(">>>>>>>>>2", dataGroups)
+	log.Debug(">>>>>>>>>2", dataGroups)
 
 	yamlString := ""
 	index := 0
@@ -108,7 +110,7 @@ func buildYAML(dataGroups map[string]interface{}) (interface{}, error) {
 		index++
 	}
 
-	fmt.Println(">>>>>>>>>3", yamlString)
+	log.Debug(">>>>>>>>>3", yamlString)
 
 	return yamlString, nil
 }

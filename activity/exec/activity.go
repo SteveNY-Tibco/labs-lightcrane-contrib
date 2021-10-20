@@ -77,11 +77,12 @@ func (a *ExecActivity) Metadata() *activity.Metadata {
 
 func (a *ExecActivity) Eval(context activity.Context) (done bool, err error) {
 
-	log.Info("[ExecActivity.Eval] entering ........ ")
+	log.Debug("[ExecActivity.Eval] entering ........ ")
+	defer log.Debug("[ExecActivity.Eval] Exit ........ ")
 
 	skipCondition := context.GetInput(iSkipCondition).(bool)
 	if skipCondition {
-		log.Info("(ExecActivity.Eval) Skip taks : ", skipCondition)
+		log.Debug("(ExecActivity.Eval) Skip taks : ", skipCondition)
 		return true, nil
 	}
 
@@ -92,7 +93,7 @@ func (a *ExecActivity) Eval(context activity.Context) (done bool, err error) {
 
 	sysEnv, err := a.getSysEnvs(context)
 	if nil != err {
-		log.Info("(ExecActivity.Eval) Unable to load sysEnv : ", err.Error())
+		log.Debug("(ExecActivity.Eval) Unable to load sysEnv : ", err.Error())
 		sysEnv = make(map[string]string)
 	}
 
@@ -124,7 +125,7 @@ func (a *ExecActivity) Eval(context activity.Context) (done bool, err error) {
 	for i := 0; i < numOfExecutions.(int); i++ {
 		if nil != variable {
 			command := pathMapper.Replace(executions[fmt.Sprintf("%s_%d", iExecution, i)].(string), variable)
-			log.Info("(ExecActivity.Eval) command : ", command)
+			log.Debug("(ExecActivity.Eval) command : ", command)
 			commands = append(commands, strings.Split(command, " "))
 		}
 	}
@@ -143,7 +144,7 @@ func (a *ExecActivity) Eval(context activity.Context) (done bool, err error) {
 	}
 	log.Debug("[ExecActivity.Eval] newEnv : ", newEnv)
 
-	log.Info("(ExecActivity.Eval) iAsynchronous : ", iAsynchronous)
+	log.Debug("(ExecActivity.Eval) iAsynchronous : ", iAsynchronous)
 	eventListener, _ := a.getExecEventBroker(context)
 	execContext := map[string]interface{}{
 		"Variable":          variable,
@@ -153,10 +154,10 @@ func (a *ExecActivity) Eval(context activity.Context) (done bool, err error) {
 	}
 	data := make(map[string]interface{})
 	if iAsynchronous {
-		log.Info("(ExecActivity.Eval) execCommand asynchronously!")
+		log.Debug("(ExecActivity.Eval) execCommand asynchronously!")
 		go a.execCommand(commands, newEnv, workingFolder, execContext, eventListener)
 	} else {
-		log.Info("(ExecActivity.Eval) execCommand synchronously!")
+		log.Debug("(ExecActivity.Eval) execCommand synchronously!")
 		data, err = a.execCommand(commands, newEnv, workingFolder, execContext, eventListener)
 	}
 
@@ -172,8 +173,6 @@ func (a *ExecActivity) Eval(context activity.Context) (done bool, err error) {
 	context.SetOutput(oErrorCode, 100)
 	context.SetOutput(oResult, data["Result"])
 
-	log.Info("[ExecActivity.Eval] Exit ........ ")
-
 	return true, nil
 }
 
@@ -183,17 +182,17 @@ func (a *ExecActivity) execCommand(
 	workingFolder interface{},
 	execContext map[string]interface{},
 	listener *execeventbroker.EXEEventBroker) (map[string]interface{}, error) {
-	log.Info("[ExecActivity.execCommand] entering - execContext : ", execContext)
+	log.Debug("[ExecActivity.execCommand] entering - execContext : ", execContext)
 	var err error
 	errorMsgs := make([]interface{}, 0)
 	data := make(map[string]interface{})
 	data["Result"] = make([]interface{}, 0)
 
 	for i := 0; i < len(commands); i++ {
-		log.Info("[ExecActivity.execCommand] command : ", commands)
+		log.Debug("[ExecActivity.execCommand] command : ", commands)
 		cmd := exec.Command(commands[i][0], commands[i][1:]...)
 		if nil != workingFolder {
-			log.Info("[ExecActivity.execCommand] Working folder : ", workingFolder.(string))
+			log.Debug("[ExecActivity.execCommand] Working folder : ", workingFolder.(string))
 			cmd.Dir = workingFolder.(string)
 			_, err := os.Stat(workingFolder.(string))
 			if err != nil {
@@ -234,7 +233,7 @@ func (a *ExecActivity) execCommand(
 			execContext["Successful"] = false
 			execContext["ErrorMsg"] = errorMsgs
 		}
-		log.Info("[ExecActivity.execCommand] send event - execContext : ", execContext)
+		log.Debug("[ExecActivity.execCommand] send event - execContext : ", execContext)
 		listener.SendEvent(execContext)
 	}
 	return data, err
@@ -281,7 +280,7 @@ func (a *ExecActivity) getVariableMapper(ctx activity.Context) (*kwr.KeywordMapp
 		if nil == mapper {
 			variables = make(map[string]string)
 			variablesDef, _ := ctx.GetSetting(sVariablesDef)
-			log.Info("ExecActivity.Processing handlers : variablesDef = ", variablesDef)
+			log.Debug("ExecActivity.Processing handlers : variablesDef = ", variablesDef)
 			for _, variableDef := range variablesDef.([]interface{}) {
 				variableInfo := variableDef.(map[string]interface{})
 				variables[variableInfo["Name"].(string)] = variableInfo["Type"].(string)
@@ -309,7 +308,7 @@ func (a *ExecActivity) getExecEventBroker(context activity.Context) (*execeventb
 
 	exeEventBroker := execeventbroker.GetFactory().GetEXEEventBroker(a.activityToConnector[myId])
 	if nil == exeEventBroker {
-		log.Info("Look up ececution event broker start ...")
+		log.Debug("Look up ececution event broker start ...")
 		connection, exist := context.GetSetting(cConnection)
 		if !exist {
 			log.Warn("Execution event broker not configured! ")
@@ -338,7 +337,7 @@ func (a *ExecActivity) getExecEventBroker(context activity.Context) (*execeventb
 			}
 			a.activityToConnector[myId] = connectorName
 		}
-		log.Info("Look up SSE data broker end ...")
+		log.Debug("Look up SSE data broker end ...")
 	}
 
 	return exeEventBroker, nil

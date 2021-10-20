@@ -42,6 +42,8 @@ func (a *ObjectMakerActivity) Metadata() *activity.Metadata {
 
 // Eval implements api.Activity.Eval - Filters the Message
 func (a *ObjectMakerActivity) Eval(ctx activity.Context) (done bool, err error) {
+	log.Debug("[ObjectMakerActivity:eval] entering ........ ")
+	defer log.Debug("[ObjectMakerActivity:eval] exit ........ ")
 
 	data := ctx.GetInput(iObjectDataMapping)
 
@@ -67,7 +69,7 @@ func (a *ObjectMakerActivity) validate(ctx activity.Context, rootMap map[string]
 	myId := util.ActivityId(ctx)
 	defaultValues, ok := ctx.GetSetting("defaultValue")
 	if !ok || nil == defaultValues {
-		log.Info("No default values set!!")
+		log.Warn("No default values set!!")
 	} else {
 		for _, defaultValue := range defaultValues.([]interface{}) {
 			defaultValueMap := defaultValue.(map[string]interface{})

@@ -56,11 +56,12 @@ func (a *FileWriterActivity) Metadata() *activity.Metadata {
 }
 
 func (a *FileWriterActivity) Eval(context activity.Context) (done bool, err error) {
-	log.Info("(Eval) Graph to file entering ......... ")
+	log.Debug("(FileWriterActivity.Eval) Graph to file entering ......... ")
+	defer log.Debug("(FileWriterActivity.Eval) write object to file exit ......... ")
 
 	skipCondition := context.GetInput(iSkipCondition).(bool)
 	if skipCondition {
-		log.Info("(Eval) Skip taks : ", skipCondition)
+		log.Debug("(Eval) Skip taks : ", skipCondition)
 		context.SetOutput(oFilename, nil)
 		return true, nil
 	}
@@ -92,7 +93,7 @@ func (a *FileWriterActivity) Eval(context activity.Context) (done bool, err erro
 		return false, nil
 	}
 
-	log.Info("(Eval) File name : ", outputFile)
+	log.Debug("(Eval) File name : ", outputFile)
 	f, err := os.OpenFile(outputFile, os.O_APPEND|os.O_WRONLY, 0600)
 	if err != nil {
 		panic(err)
@@ -103,7 +104,7 @@ func (a *FileWriterActivity) Eval(context activity.Context) (done bool, err erro
 
 	f.WriteString(dataString)
 
-	log.Info("(Eval) list files in : ", filepath.Dir(outputFile))
+	log.Debug("(Eval) list files in : ", filepath.Dir(outputFile))
 	files, err := ioutil.ReadDir(filepath.Dir(outputFile))
 	if err != nil {
 		log.Error(err)
@@ -116,7 +117,6 @@ func (a *FileWriterActivity) Eval(context activity.Context) (done bool, err erro
 	context.SetOutput(oFilename, outputFile)
 	context.SetOutput(oVariablesOut, pathVariable)
 
-	log.Info("(Eval) write object to file exit ......... ")
 	return true, nil
 }
 
@@ -132,7 +132,7 @@ func (a *FileWriterActivity) getPathMapper(ctx activity.Context) (*KeywordMapper
 		if nil == mapper {
 			variables = make(map[string]string)
 			variablesDef, _ := ctx.GetSetting(sVariablesDef)
-			log.Info("Processing handlers : variablesDef = ", variablesDef)
+			log.Debug("Processing handlers : variablesDef = ", variablesDef)
 			for _, variableDef := range variablesDef.([]interface{}) {
 				variableInfo := variableDef.(map[string]interface{})
 				variables[variableInfo["Name"].(string)] = variableInfo["Type"].(string)
@@ -173,8 +173,8 @@ func (a *FileWriterActivity) prepareFile(outputFile string) error {
 	if !fileExist {
 		outputFolder := filepath.Dir(outputFile)
 
-		log.Info("Output file : ", outputFile)
-		log.Info("Output folder : ", outputFolder)
+		log.Debug("Output file : ", outputFile)
+		log.Debug("Output folder : ", outputFolder)
 
 		_, err := os.Stat(outputFolder)
 		if err != nil {
@@ -207,7 +207,7 @@ func (a *FileWriterActivity) prepareFile(outputFile string) error {
 		}
 	}
 
-	log.Info("Initializing FileWriter Service end ...")
+	log.Debug("Initializing FileWriter Service end ...")
 
 	return nil
 }
@@ -275,7 +275,7 @@ func (this *KeywordMapper) replace(template string, keywordMap map[string]interf
 		}
 	}
 
-	log.Info("[KeywordMapper.replace] template = ", template)
+	log.Debug("[KeywordMapper.replace] template = ", template)
 
 	this.mh.setMap(keywordMap)
 	this.document.Reset()
@@ -288,7 +288,7 @@ func (this *KeywordMapper) replace(template string, keywordMap map[string]interf
 
 	this.mh.startToMap()
 	for i := 0; i < len(template); i++ {
-		//log.Infof("template[%d] = ", i, template[i])
+		//log.Debugf("template[%d] = ", i, template[i])
 		// maybe find a keyword beginning Tag - now isn't in a keyword
 		if !scope && template[i] == this.slefttag[0] {
 			if this.isATag(i, this.slefttag, template) {
@@ -304,7 +304,7 @@ func (this *KeywordMapper) replace(template string, keywordMap map[string]interf
 				if "" == svalue {
 					svalue = fmt.Sprintf("%s%s%s", this.slefttag, skeyword, this.srighttag)
 				}
-				//log.Info("value ->", svalue);
+				//log.Debug("value ->", svalue);
 				this.document.WriteString(svalue)
 				boundary = true
 				scope = false
@@ -321,7 +321,7 @@ func (this *KeywordMapper) replace(template string, keywordMap map[string]interf
 			boundary = false
 		}
 
-		//log.Info("document = ", this.document)
+		//log.Debug("document = ", this.document)
 
 	}
 	this.mh.endOfMapping(this.document.String())

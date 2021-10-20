@@ -65,7 +65,8 @@ func (a *PipelineBuilderActivity) Metadata() *activity.Metadata {
 
 func (a *PipelineBuilderActivity) Eval(context activity.Context) (done bool, err error) {
 
-	log.Info("[PipelineBuilderActivity:Eval] entering ........ ")
+	log.Debug("[PipelineBuilderActivity:Eval] entering ........ ")
+	defer log.Debug("[PipelineBuilderActivity:Eval] Exit ........ ")
 
 	templateLibrary, err := a.getTemplateLibrary(context)
 	if err != nil {
@@ -76,28 +77,26 @@ func (a *PipelineBuilderActivity) Eval(context activity.Context) (done bool, err
 	if nil == category {
 		category = "*"
 	}
-	log.Info("[PipelineBuilderActivity:Eval]  Name : ", category)
+	log.Debug("[PipelineBuilderActivity:Eval]  Name : ", category)
 
 	component := context.GetInput(iComponent)
 	if nil == component {
 		component = ""
 	}
-	log.Info("[PipelineBuilderActivity:Eval]  Name : ", component)
+	log.Debug("[PipelineBuilderActivity:Eval]  Name : ", component)
 
 	descriptor := templateLibrary.GetComponentDescriptor(category.(string), component.(string))
 
-	log.Info("[PipelineBuilderActivity:Eval]  oDescriptor : ", descriptor)
+	log.Debug("[PipelineBuilderActivity:Eval]  oDescriptor : ", descriptor)
 	context.SetOutput(oDescriptor, descriptor)
-
-	log.Info("[PipelineBuilderActivity:Eval] Exit ........ ")
 
 	return true, nil
 }
 
 func (a *PipelineBuilderActivity) getTemplateLibrary(ctx activity.Context) (*model.FlogoTemplateLibrary, error) {
 
-	log.Info("[PipelineBuilderActivity:getTemplate] entering ........ ")
-	defer log.Info("[PipelineBuilderActivity:getTemplate] exit ........ ")
+	log.Debug("[PipelineBuilderActivity:getTemplate] entering ........ ")
+	defer log.Debug("[PipelineBuilderActivity:getTemplate] exit ........ ")
 
 	myId := util.ActivityId(ctx)
 	templateLib := a.templates[myId]

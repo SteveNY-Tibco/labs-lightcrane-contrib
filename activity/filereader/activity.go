@@ -42,13 +42,14 @@ func (a *FileReaderActivity) Metadata() *activity.Metadata {
 }
 
 func (a *FileReaderActivity) Eval(context activity.Context) (done bool, err error) {
-	log.Info("(FileReaderActivity.Eval) Entering ......... ")
+	log.Debug("(FileReaderActivity.Eval) Entering ......... ")
+	defer log.Debug("(FileReaderActivity.Eval) Exit ......... ")
 
 	baseFolder, err := a.getBaseFolder(context)
 	if nil != err {
 		return false, err
 	}
-	log.Info("(FileReaderActivity.Eval) Output base folder = ", baseFolder)
+	log.Debug("(FileReaderActivity.Eval) Output base folder = ", baseFolder)
 
 	a.mux.Lock()
 	defer a.mux.Unlock()
@@ -61,7 +62,7 @@ func (a *FileReaderActivity) Eval(context activity.Context) (done bool, err erro
 
 	matches, err := filepath.Glob(filePattern)
 
-	log.Info("(FileReaderActivity.Eval) File pattern : ", filePattern)
+	log.Debug("(FileReaderActivity.Eval) File pattern : ", filePattern)
 
 	results := make([]map[string]interface{}, 0)
 	for _, filename := range matches {
@@ -73,7 +74,6 @@ func (a *FileReaderActivity) Eval(context activity.Context) (done bool, err erro
 	}
 	context.SetOutput(oResults, results)
 
-	log.Info("(FileReaderActivity.Eval) Exit ......... ")
 	return true, nil
 }
 
@@ -87,12 +87,12 @@ func (a *FileReaderActivity) getBaseFolder(context activity.Context) (string, er
 		defer a.mux.Unlock()
 		baseFolder = a.baseFolders[myId]
 		if "" == baseFolder {
-			log.Info("Initializing FileReader Service start ...")
+			log.Debug("Initializing FileReader Service start ...")
 
 			baseFolderSetting, _ := context.GetSetting(sBaseFolder)
 			baseFolder = baseFolderSetting.(string)
 
-			log.Info("Initializing FileReader Service end ...")
+			log.Debug("Initializing FileReader Service end ...")
 			a.baseFolders[myId] = baseFolder
 		}
 	}

@@ -62,7 +62,8 @@ func (a *PipelineSpliterActivity) Metadata() *activity.Metadata {
 
 func (a *PipelineSpliterActivity) Eval(context activity.Context) (done bool, err error) {
 
-	log.Info("[PipelineSpliterActivity:Eval] entering ........ ")
+	log.Debug("[PipelineSpliterActivity:Eval] entering ........ ")
+	defer log.Debug("[PipelineSpliterActivity:Eval] Exit ........ ")
 
 	spliter, err := a.getSpliter(context)
 	if err != nil {
@@ -74,7 +75,7 @@ func (a *PipelineSpliterActivity) Eval(context activity.Context) (done bool, err
 		return false, errors.New("Invalid command ... ")
 	}
 
-	//log.Info("rawPipelineConfig : ", rawPipelineConfig)
+	//log.Debug("rawPipelineConfig : ", rawPipelineConfig)
 
 	rawPipelineConfigNoSecret, err := secret.PreProcessConfig([]byte(rawPipelineConfig))
 	if err != nil {
@@ -105,21 +106,19 @@ func (a *PipelineSpliterActivity) Eval(context activity.Context) (done bool, err
 		}
 	}
 
-	//log.Info(pipelineConfigsOutput)
+	//log.Debug(pipelineConfigsOutput)
 
 	context.SetOutput(oID, deployment.ID)
 	context.SetOutput(oDataFlow, &data.ComplexObject{Metadata: oDataFlow, Value: deployment.DataFlow})
 	context.SetOutput(oPipelineConfig, &data.ComplexObject{Metadata: oPipelineConfig, Value: pipelineConfigsOutput})
-
-	log.Info("[PipelineSpliterActivity:Eval] Exit ........ ")
 
 	return true, nil
 }
 
 func (a *PipelineSpliterActivity) getSpliter(ctx activity.Context) (*PipelineConfigSpliter, error) {
 
-	log.Info("[PipelineSpliterActivity:getSpliter] entering ........ ")
-	defer log.Info("[PipelineSpliterActivity:getSpliter] exit ........ ")
+	log.Debug("[PipelineSpliterActivity:getSpliter] entering ........ ")
+	defer log.Debug("[PipelineSpliterActivity:getSpliter] exit ........ ")
 
 	myId := ActivityId(ctx)
 	spliter := a.spliters[myId]
@@ -296,11 +295,11 @@ func (this *PipelineConfig) UnmarshalResource() error {
 			return fmt.Errorf("error loading flow resource with id '%s': %s", aResource.ID, err.Error())
 		}
 		this.Flows[aFlow.Name] = aFlow
-		log.Info("?????????????????????")
+		log.Debug("?????????????????????")
 		for _, task := range aFlow.Tasks {
-			log.Info(task.ActivityCfgRep.Settings)
+			log.Debug(task.ActivityCfgRep.Settings)
 		}
-		log.Info("?????????????????????")
+		log.Debug("?????????????????????")
 	}
 	return nil
 }
@@ -370,7 +369,7 @@ func (this *PipelineConfigSpliter) Split(aPipelineConfig *PipelineConfig) (*Depl
 				}
 			} else {
 				if "Model Inference Flow" == flow.Name {
-					log.Info("flow.Tasks[0] : ", flow.Tasks[0])
+					log.Debug("flow.Tasks[0] : ", flow.Tasks[0])
 					newPipelineConfig = &PipelineConfig{
 						Config: app.Config{
 							Name: fmt.Sprintf("%s_%d", flogoNameBase, index),
@@ -440,13 +439,13 @@ func (this *PipelineConfigSpliter) splitFlow(aFlow *definition.DefinitionRep) []
 	flows := make([]*definition.DefinitionRep, 0)
 	index := 0
 	for _, task := range aFlow.Tasks {
-		log.Info("Task.ID : ", task.ID)
+		log.Debug("Task.ID : ", task.ID)
 		if "#modelrunner" == task.ActivityCfgRep.Ref {
 			for _, replacement := range this.modelRunnerReplacement(task) {
 				flows[index].Tasks = append(flows[index].Tasks, replacement)
 			}
 			index += 1
-			log.Info("Task : ", task)
+			log.Debug("Task : ", task)
 			flows = append(flows, &definition.DefinitionRep{
 				Name:    "Model Inference Flow",
 				ModelID: aFlow.ModelID,

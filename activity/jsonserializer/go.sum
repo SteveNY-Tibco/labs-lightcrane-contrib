@@ -1,3 +1,5 @@
+github.com/TIBCOSoftware/flogo-contrib v0.5.8 h1:lnqkBbKldNbD0Sgrd/Gv92FYpwTv8Jm29EBFbDmyD2Y=
+github.com/TIBCOSoftware/flogo-contrib v0.5.8/go.mod h1:gWcVjvpNFzoQy9puLgyJaLHzJaxqhkoJ8yctKTVX5K4=
 github.com/TIBCOSoftware/flogo-lib v0.5.8 h1:JX6PcxtyJbya++sKiWhFRADA6UnkSRS/INuTPzOMF0Y=
 github.com/TIBCOSoftware/flogo-lib v0.5.8/go.mod h1:AE7tfFBvQNemM61frHCwTJYBWC9+iXohXyqrApe6xj4=
 github.com/benbjohnson/clock v1.1.0/go.mod h1:J11/hYXuz8f4ySSvYwY0FKfm+ezbsZBKZxNJlLklBHA=

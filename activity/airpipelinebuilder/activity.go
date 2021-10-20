@@ -92,7 +92,8 @@ func (a *PipelineBuilderActivity) Metadata() *activity.Metadata {
 
 func (a *PipelineBuilderActivity) Eval(context activity.Context) (done bool, err error) {
 
-	log.Info("[PipelineBuilderActivity:Eval] entering ........ ")
+	log.Debug("[PipelineBuilderActivity:Eval] entering ........ ")
+	defer log.Debug("[PipelineBuilderActivity:Eval] Exit ........ ")
 
 	templateLibrary, gProperties, err := a.getTemplateLibrary(context)
 	if err != nil {
@@ -103,19 +104,19 @@ func (a *PipelineBuilderActivity) Eval(context activity.Context) (done bool, err
 	if !ok {
 		return false, errors.New("Invalid Application Name ... ")
 	}
-	log.Info("[PipelineBuilderActivity:Eval]  Name : ", applicationName)
+	log.Debug("[PipelineBuilderActivity:Eval]  Name : ", applicationName)
 
 	serviceType, ok := context.GetInput(iServiceType).(string)
 	if !ok {
 		return false, errors.New("Invalid Service Type ... ")
 	}
-	log.Info("[PipelineBuilderActivity:Eval]  Name : ", serviceType)
+	log.Debug("[PipelineBuilderActivity:Eval]  Name : ", serviceType)
 
 	applicationPipelineDescriptorStr, ok := context.GetInput(iApplicationPipelineDescriptor).(string)
 	if !ok {
 		return false, errors.New("Invalid Application Pipeline Descriptor ... ")
 	}
-	log.Info("[PipelineBuilderActivity:Eval]  Pipeline Descriptor : ", applicationPipelineDescriptorStr)
+	log.Debug("[PipelineBuilderActivity:Eval]  Pipeline Descriptor : ", applicationPipelineDescriptorStr)
 
 	var applicationPipelineDescriptor map[string]interface{}
 	json.Unmarshal([]byte(applicationPipelineDescriptorStr), &applicationPipelineDescriptor)
@@ -271,12 +272,12 @@ func (a *PipelineBuilderActivity) Eval(context activity.Context) (done bool, err
 	} else {
 		propertyPrefix = pathMapper.Replace(propertyPrefix, defVariable)
 	}
-	log.Info("[PipelineBuilderActivity:Eval]  pathMapper : ", pathMapper)
-	log.Info("[PipelineBuilderActivity:Eval]  defVariable : ", defVariable)
-	log.Info("[PipelineBuilderActivity:Eval]  propertyPrefix : ", propertyPrefix)
-	log.Info("[PipelineBuilderActivity:Eval]  appProperties : ", appProperties)
-	log.Info("[PipelineBuilderActivity:Eval]  gProperties : ", gProperties)
-	log.Info("[PipelineBuilderActivity:Eval]  ports : ", ports)
+	log.Debug("[PipelineBuilderActivity:Eval]  pathMapper : ", pathMapper)
+	log.Debug("[PipelineBuilderActivity:Eval]  defVariable : ", defVariable)
+	log.Debug("[PipelineBuilderActivity:Eval]  propertyPrefix : ", propertyPrefix)
+	log.Debug("[PipelineBuilderActivity:Eval]  appProperties : ", appProperties)
+	log.Debug("[PipelineBuilderActivity:Eval]  gProperties : ", gProperties)
+	log.Debug("[PipelineBuilderActivity:Eval]  ports : ", ports)
 
 	switch serviceType {
 	case "k8s":
@@ -303,13 +304,11 @@ func (a *PipelineBuilderActivity) Eval(context activity.Context) (done bool, err
 		return true, err
 	}
 
-	log.Info("[PipelineBuilderActivity:Eval]  Descriptor : ", descriptor)
-	log.Info("[PipelineBuilderActivity:Eval]  PropertyNameDef : ", propertyContainer.GetPropertyNameDef())
+	log.Debug("[PipelineBuilderActivity:Eval]  Descriptor : ", descriptor)
+	log.Debug("[PipelineBuilderActivity:Eval]  PropertyNameDef : ", propertyContainer.GetPropertyNameDef())
 
 	context.SetOutput(oDescriptor, descriptor)
 	context.SetOutput(oPropertyNameDef, propertyContainer.GetPropertyNameDef())
-
-	log.Info("[PipelineBuilderActivity:Eval] Exit ........ ")
 
 	return true, nil
 }
@@ -329,10 +328,10 @@ func (a *PipelineBuilderActivity) createDockerF1Properties(
 		"Value": make([]interface{}, 0),
 	}
 	description = append(description, mainDescription)
-	log.Info("[PipelineBuilderActivity:createDockerF1Properties]  description1 : ", description)
+	log.Debug("[PipelineBuilderActivity:createDockerF1Properties]  description1 : ", description)
 
 	for _, property := range gProperties {
-		log.Info("[PipelineBuilderActivity:createDockerF1Properties]  property : ", property)
+		log.Debug("[PipelineBuilderActivity:createDockerF1Properties]  property : ", property)
 		/* nil will not be accepted */
 		value, dtype, err := util.GetPropertyValue(property["Value"], property["Type"])
 		if nil != err {
@@ -368,7 +367,7 @@ func (a *PipelineBuilderActivity) createDockerF1Properties(
 		})
 		index++
 	}
-	log.Info("[PipelineBuilderActivity:createDockerF1Properties]  description2 : ", description)
+	log.Debug("[PipelineBuilderActivity:createDockerF1Properties]  description2 : ", description)
 	return description, nil
 }
 
@@ -510,8 +509,8 @@ func (a *PipelineBuilderActivity) createK8sF1Properties(
 
 func (a *PipelineBuilderActivity) getTemplateLibrary(ctx activity.Context) (*model.FlogoTemplateLibrary, []map[string]interface{}, error) {
 
-	log.Info("[PipelineBuilderActivity:getTemplate] entering ........ ")
-	defer log.Info("[PipelineBuilderActivity:getTemplate] exit ........ ")
+	log.Debug("[PipelineBuilderActivity:getTemplate] entering ........ ")
+	defer log.Debug("[PipelineBuilderActivity:getTemplate] exit ........ ")
 
 	myId := util.ActivityId(ctx)
 	templateLib := a.templates[myId]
@@ -560,7 +559,7 @@ func (a *PipelineBuilderActivity) getVariableMapper(ctx activity.Context) (*kwr.
 		if nil == mapper {
 			variables = make(map[string]string)
 			variablesDef, ok := ctx.GetSetting(sVariablesDef)
-			log.Info("Processing handlers : variablesDef = ", variablesDef)
+			log.Debug("Processing handlers : variablesDef = ", variablesDef)
 			if ok && nil != variablesDef {
 				for _, variableDef := range variablesDef.([]interface{}) {
 					variableInfo := variableDef.(map[string]interface{})

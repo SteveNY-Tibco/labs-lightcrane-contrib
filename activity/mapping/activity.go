@@ -49,8 +49,8 @@ func (a *Mapping) Metadata() *activity.Metadata {
 // Eval implements api.Activity.Eval - Filters the Message
 func (a *Mapping) Eval(ctx activity.Context) (done bool, err error) {
 
-	log.Info("[Mapping:Eval] entering ........ ")
-	defer log.Info("[Mapping:Eval] exit ........ ")
+	log.Debug("[Mapping:Eval] entering ........ ")
+	defer log.Debug("[Mapping:Eval] exit ........ ")
 
 	mappedTuple := ctx.GetInput(input).(map[string]interface{})
 	log.Debug("[Mapping.Evale] mapped data = ", mappedTuple)
@@ -62,7 +62,7 @@ func (a *Mapping) Eval(ctx activity.Context) (done bool, err error) {
 		delete(mappedTuple, array_size)
 		skipCondition := mappedTuple[skip_condition].(bool)
 		delete(mappedTuple, skip_condition)
-		log.Info("[Mapping.Evale] skipCondition = ", skipCondition)
+		log.Debug("[Mapping.Evale] skipCondition = ", skipCondition)
 		if !skipCondition {
 			mappedTuples.SetData(mappedTuple)
 		} else {
