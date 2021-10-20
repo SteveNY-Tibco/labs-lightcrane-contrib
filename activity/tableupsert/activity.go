@@ -54,6 +54,9 @@ func (a *TableUpsertActivity) Metadata() *activity.Metadata {
 // Eval implements api.Activity.Eval - Filters the Message
 func (a *TableUpsertActivity) Eval(ctx activity.Context) (done bool, err error) {
 
+	log.Debug("(TableUpsertActivity.Eval) entering ..... ")
+	defer log.Debug("(TableUpsertActivity.Eval) exit ..... ")
+
 	_, myTable, err := a.getTable(ctx)
 
 	if nil != err {

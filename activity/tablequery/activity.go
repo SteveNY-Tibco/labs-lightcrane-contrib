@@ -55,6 +55,9 @@ func (a *TableQueryActivity) Metadata() *activity.Metadata {
 // Eval implements api.Activity.Eval - Filters the Message
 func (a *TableQueryActivity) Eval(ctx activity.Context) (done bool, err error) {
 
+	log.Debug("(TableQueryActivity.Eval) entering ..... ")
+	defer log.Debug("(TableQueryActivity.Eval) exit ..... ")
+
 	queryKeys, myTable, err := a.getTable(ctx)
 
 	if nil != err {

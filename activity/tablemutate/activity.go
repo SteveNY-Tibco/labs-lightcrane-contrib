@@ -56,6 +56,9 @@ func (a *TableMutateActivity) Metadata() *activity.Metadata {
 // Eval implements api.Activity.Eval - Filters the Message
 func (a *TableMutateActivity) Eval(ctx activity.Context) (done bool, err error) {
 
+	log.Debug("(TableMutateActivity.Eval) entering ..... ")
+	defer log.Debug("(TableMutateActivity.Eval) exit ..... ")
+
 	_, myTable, err := a.getTable(ctx)
 
 	if nil != err {

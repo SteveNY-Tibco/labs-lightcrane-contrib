@@ -54,13 +54,14 @@ func (a *Properties2ObjectActivity) Metadata() *activity.Metadata {
 func (a *Properties2ObjectActivity) Eval(context activity.Context) (done bool, err error) {
 
 	log.Info("[Properties2ObjectActivity:Eval] entering ........ ")
+	defer log.Info("[Properties2ObjectActivity:Eval] Exit ........ ")
 
 	propertiesGroups, ok := context.GetInput(iProperties).([]interface{})
 	if !ok {
 		return true, errors.New("Illegal input propertiesGroup!!")
 	}
 
-	log.Info("[Properties2ObjectActivity:Eval] ??????????????????? ", propertiesGroups)
+	log.Debug("[Properties2ObjectActivity:Eval] ??????????????????? ", propertiesGroups)
 
 	overrideProperties, _ := context.GetInput(iOverrideProperties).(map[string]interface{})
 
@@ -70,7 +71,7 @@ func (a *Properties2ObjectActivity) Eval(context activity.Context) (done bool, e
 
 	propertiesGroupsObj := make(map[string]interface{})
 	for _, propertiesGroup := range propertiesGroups {
-		log.Info("[Properties2ObjectActivity:Eval] ??????????????????? ", propertiesGroup)
+		log.Debug("[Properties2ObjectActivity:Eval] ??????????????????? ", propertiesGroup)
 		propertiesGroupObj, err := a.buildObject(
 			propertiesGroup.(map[string]interface{})["Value"].([]interface{}),
 			variableMapper,
@@ -88,9 +89,7 @@ func (a *Properties2ObjectActivity) Eval(context activity.Context) (done bool, e
 	if nil != context.GetInput(iPassThroughData) {
 		context.SetOutput(oPassThroughDataOut, context.GetInput(iPassThroughData))
 	}
-	log.Info("[Properties2ObjectActivity:Eval] oDataObject : ", propertiesGroupsObj)
-
-	log.Info("[Properties2ObjectActivity:Eval] Exit ........ ")
+	log.Debug("[Properties2ObjectActivity:Eval] oDataObject : ", propertiesGroupsObj)
 
 	return true, nil
 }
@@ -115,7 +114,7 @@ func (a *Properties2ObjectActivity) buildObject(
 			keyElements = strings.Split(propertyKey, ".")
 		}
 
-		log.Info("[Properties2ObjectActivity:Eval] keyElements = ", keyElements)
+		log.Debug("[Properties2ObjectActivity:Eval] keyElements = ", keyElements)
 
 		if nil != property["Value"] {
 			propertyValue, trueType, err := util.GetPropertyValue(property["Value"], property["Type"])
@@ -125,12 +124,12 @@ func (a *Properties2ObjectActivity) buildObject(
 			if "String" == trueType {
 				propertyValue = variableMapper.Replace(propertyValue.(string), variable)
 			}
-			log.Info("(Properties2ObjectActivity.Eval) propertyValue : ", propertyValue)
+			log.Debug("(Properties2ObjectActivity.Eval) propertyValue : ", propertyValue)
 			current := propertiesObj
 			for index, key := range keyElements {
-				//log.Info("[Properties2ObjectActivity:Eval] key = ", key)
+				//log.Debug("[Properties2ObjectActivity:Eval] key = ", key)
 				if strings.HasSuffix(key, "]") {
-					//log.Info("[Properties2ObjectActivity:Eval] an array ... ")
+					//log.Debug("[Properties2ObjectActivity:Eval] an array ... ")
 					pos := strings.Index(key, "[")
 					slot, _ := strconv.Atoi(key[pos+1 : len(key)-1])
 					key = key[0:pos]
@@ -147,7 +146,7 @@ func (a *Properties2ObjectActivity) buildObject(
 						current = current[key].([]interface{})[slot].(map[string]interface{})
 					}
 				} else {
-					//log.Info("[Properties2ObjectActivity:Eval] an object or a value ... ")
+					//log.Debug("[Properties2ObjectActivity:Eval] an object or a value ... ")
 					if nil == current[key] {
 						current[key] = make(map[string]interface{})
 					}
@@ -162,7 +161,7 @@ func (a *Properties2ObjectActivity) buildObject(
 		}
 	}
 
-	log.Info("propertiesObj : ", propertiesObj)
+	log.Debug("propertiesObj : ", propertiesObj)
 
 	return propertiesObj, nil
 }
