@@ -37,12 +37,12 @@ func (a *JSONSerializerActivity) Metadata() *activity.Metadata {
 
 func (a *JSONSerializerActivity) Eval(ctx activity.Context) (done bool, err error) {
 
-	log.Info("[JSONSerializerActivity:Eval] entering ........ ")
-	defer log.Info("[JSONSerializerActivity:Eval] exit ........ ")
+	log.Debug("[JSONSerializerActivity:Eval] entering ........ ")
+	defer log.Debug("[JSONSerializerActivity:Eval] exit ........ ")
 
 	data, ok := ctx.GetInput(iData).(*data.ComplexObject).Value.(map[string]interface{})
 
-	log.Info("[JSONSerializerActivity:Eval] data in : ", data)
+	log.Debug("[JSONSerializerActivity:Eval] data in : ", data)
 
 	if !ok {
 		log.Warn("[JSONSerializerActivity:Eval] No valid data ... ")
@@ -54,7 +54,7 @@ func (a *JSONSerializerActivity) Eval(ctx activity.Context) (done bool, err erro
 		return false, nil
 	}
 
-	log.Info("[JSONSerializerActivity:Eval] json out : ", string(jsondata))
+	log.Debug("[JSONSerializerActivity:Eval] json out : ", string(jsondata))
 
 	ctx.SetOutput(oJSONString, string(jsondata))
 
