@@ -67,7 +67,7 @@ func (a *TableMutateActivity) Eval(ctx activity.Context) (done bool, err error) 
 
 	iData := ctx.GetInput(input).(*data.ComplexObject).Value
 
-	log.Info("(Eval)iData.Value = ", iData, ", type = ", reflect.TypeOf(iData))
+	log.Debug("(Eval)iData.Value = ", iData, ", type = ", reflect.TypeOf(iData))
 
 	methodSetting, _ := ctx.GetSetting(setting_Method)
 	method := methodSetting.(string)
@@ -86,7 +86,7 @@ func (a *TableMutateActivity) Eval(ctx activity.Context) (done bool, err error) 
 		"Old": oldRecord,
 	}
 
-	log.Info("(Eval)output tuple = ", outputTuple, ", exist = ", exists, ", row count = ", myTable.RowCount())
+	log.Debug("(Eval)output tuple = ", outputTuple, ", exist = ", exists, ", row count = ", myTable.RowCount())
 
 	complexdata := &data.ComplexObject{Metadata: "Data", Value: outputTuple}
 	ctx.SetOutput(output_Data, complexdata)
@@ -108,7 +108,7 @@ func (a *TableMutateActivity) getTable(context activity.Context) ([]string, *tab
 		keyName = a.activityToKeyNames[myId]
 		if nil == myTable {
 
-			log.Info("(getTable) init : ", "initialize table begin ....")
+			log.Debug("(getTable) init : ", "initialize table begin ....")
 
 			iTableInfo, exist := context.GetSetting(setting_Table)
 			if !exist {
@@ -149,9 +149,9 @@ func (a *TableMutateActivity) getTable(context activity.Context) ([]string, *tab
 				return nil, nil, activity.NewError("(getTable)Unable to get table name", "TABLE_UPSERT-4003", nil)
 			}
 
-			log.Info("-============= TABLE SCHEMA ================-")
-			log.Info(schema)
-			log.Info("-===========================================-")
+			log.Debug("-============= TABLE SCHEMA ================-")
+			log.Debug(schema)
+			log.Debug("-===========================================-")
 
 			keyName = make([]string, 0)
 			indexible := make([]string, 0)
@@ -181,7 +181,7 @@ func (a *TableMutateActivity) getTable(context activity.Context) ([]string, *tab
 				}
 			}
 
-			log.Info("(getTable) init : ", "initialize table done : myTable = ", myTable)
+			log.Debug("(getTable) init : ", "initialize table done : myTable = ", myTable)
 			a.activityToTable[myId] = tablename
 		}
 	}

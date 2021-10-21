@@ -50,7 +50,7 @@ func TestEval(t *testing.T) {
 	tc.SetInput("Component", nil)
 
 	result, err := act.Eval(tc)
-	log.Info("result = ", result)
+	log.Debug("result = ", result)
 	if err != nil {
 		t.Errorf("Could not publish a message: %s", err)
 		t.Fail()

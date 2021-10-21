@@ -66,12 +66,12 @@ func (a *TableQueryActivity) Eval(ctx activity.Context) (done bool, err error) {
 
 	iData := ctx.GetInput(input).(*data.ComplexObject).Value
 
-	log.Info("(Eval)iData.Value = ", iData, ", type = ", reflect.TypeOf(iData))
+	log.Debug("(Eval)iData.Value = ", iData, ", type = ", reflect.TypeOf(iData))
 
 	records, byPKey := myTable.Get(queryKeys, iData.(map[string]interface{}))
 	exists := (len(records) != 0)
 
-	log.Info("(Eval)output tuple = ", records, ", exist = ", exists, ", found row count = ", len(records))
+	log.Debug("(Eval)output tuple = ", records, ", exist = ", exists, ", found row count = ", len(records))
 
 	if byPKey {
 		if exists {
@@ -101,7 +101,7 @@ func (a *TableQueryActivity) getTable(context activity.Context) ([]string, *tabl
 		queryKeys = a.activityToQueryKeys[myId]
 		if nil == myTable {
 
-			log.Info("(getTable) init : ", "initialize table begin ....")
+			log.Debug("(getTable) init : ", "initialize table begin ....")
 
 			iIndices, _ := context.GetSetting(setting_Indices)
 			queryKeys = strings.Split(iIndices.(string), " ")
@@ -145,9 +145,9 @@ func (a *TableQueryActivity) getTable(context activity.Context) ([]string, *tabl
 				return nil, nil, activity.NewError("(getTable)Unable to get table name", "TABLE_UPSERT-4003", nil)
 			}
 
-			log.Info("-============= TABLE SCHEMA ================-")
-			log.Info(schema)
-			log.Info("-===========================================-")
+			log.Debug("-============= TABLE SCHEMA ================-")
+			log.Debug(schema)
+			log.Debug("-===========================================-")
 
 			keyName := make([]string, 0)
 			indexible := make([]string, 0)
@@ -177,7 +177,7 @@ func (a *TableQueryActivity) getTable(context activity.Context) ([]string, *tabl
 				}
 			}
 
-			log.Info("(getTable) init : ", "initialize table done ....")
+			log.Debug("(getTable) init : ", "initialize table done ....")
 			a.activityToTable[myId] = tablename
 			a.activityToQueryKeys[myId] = queryKeys
 		}

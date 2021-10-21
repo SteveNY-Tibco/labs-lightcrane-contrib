@@ -53,8 +53,8 @@ func (a *Properties2ObjectActivity) Metadata() *activity.Metadata {
 
 func (a *Properties2ObjectActivity) Eval(context activity.Context) (done bool, err error) {
 
-	log.Info("[Properties2ObjectActivity:Eval] entering ........ ")
-	defer log.Info("[Properties2ObjectActivity:Eval] Exit ........ ")
+	log.Debug("[Properties2ObjectActivity:Eval] entering ........ ")
+	defer log.Debug("[Properties2ObjectActivity:Eval] Exit ........ ")
 
 	propertiesGroups, ok := context.GetInput(iProperties).([]interface{})
 	if !ok {
