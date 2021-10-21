@@ -35,8 +35,8 @@ func (fnAirDataSelector) Eval(params ...interface{}) (interface{}, error) {
 	format := params[3].(string)
 
 	log.Debug("(fnAirDataSelector.Eval) in reading : ", reading)
-	log.Info("(fnAirDataSelector.Eval) in enriched : ", enriched)
-	log.Info("(fnAirDataSelector.Eval) in format : ", format)
+	log.Debug("(fnAirDataSelector.Eval) in enriched : ", enriched)
+	log.Debug("(fnAirDataSelector.Eval) in format : ", format)
 
 	data := NewKeywordMapper("@", "@").Replace(
 		format,
@@ -146,7 +146,7 @@ func (this *KeywordMapper) Replace(template string, mh KeywordReplaceHandler) st
 
 	mh.startToMap()
 	for i := 0; i < len(template); i++ {
-		//log.Infof("template[%d] = ", i, template[i])
+		//log.Debugf("template[%d] = ", i, template[i])
 		// maybe find a keyword beginning Tag - now isn't in a keyword
 		if !scope && template[i] == this.slefttag[0] {
 			if this.isATag(i, this.slefttag, template) {
@@ -162,7 +162,7 @@ func (this *KeywordMapper) Replace(template string, mh KeywordReplaceHandler) st
 				if "" == svalue {
 					svalue = fmt.Sprintf("%s%s%s", this.slefttag, skeyword, this.srighttag)
 				}
-				//log.Info("value ->", svalue);
+				//log.Debug("value ->", svalue);
 				this.document.WriteString(svalue)
 				boundary = true
 				scope = false
@@ -179,7 +179,7 @@ func (this *KeywordMapper) Replace(template string, mh KeywordReplaceHandler) st
 			boundary = false
 		}
 
-		//log.Info("document = ", this.document)
+		//log.Debug("document = ", this.document)
 
 	}
 	mh.endOfMapping(this.document.String())

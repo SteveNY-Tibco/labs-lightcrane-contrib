@@ -21,14 +21,14 @@ func (fnGetSubobject) Sig() (paramTypes []data.Type, isVariadic bool) {
 }
 
 func (fnGetSubobject) Eval(params ...interface{}) (interface{}, error) {
-	log.Info("(fnGetSubobject.Eval) params[0] : ", params[0], ", params[1] : ", params[1])
+	log.Debug("(fnGetSubobject.Eval) params[0] : ", params[0], ", params[1] : ", params[1])
 	if nil == params[0] || nil == params[1] {
 		return nil, nil
 	}
 	object := params[0].(map[string]interface{})
 	key := params[1].(string)
 	result := object[key]
-	log.Info("(fnGetSubobject.Eval) object : ", object, ", key : ", key, ", ", ", result : ", result)
+	log.Debug("(fnGetSubobject.Eval) object : ", object, ", key : ", key, ", ", ", result : ", result)
 
 	return result, nil
 }

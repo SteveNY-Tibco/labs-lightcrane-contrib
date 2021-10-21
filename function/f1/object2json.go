@@ -23,7 +23,7 @@ func (fnObject2Json) Sig() (paramTypes []data.Type, isVariadic bool) {
 }
 
 func (fnObject2Json) Eval(params ...interface{}) (interface{}, error) {
-	log.Info("(fnObject2Json.Eval) params[0] : ", params[0])
+	log.Debug("(fnObject2Json.Eval) params[0] : ", params[0])
 	object := params[0]
 	if nil == object {
 		return "{}", nil

@@ -1,9 +1,9 @@
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
-github.com/SteveNY-Tibco/labs-lightcrane-contrib v0.0.0-20211015185606-6baf0ec19706 h1:kmnMzrrShGkbjN5XICmRLabxeAAakdswumfwlPCoIkM=
-github.com/SteveNY-Tibco/labs-lightcrane-contrib/common/keywordreplace v0.0.0-20211015185606-6baf0ec19706 h1:FedER/WdcpT2guoOffuheZ/REYrAttKBETywSqFYgls=
-github.com/SteveNY-Tibco/labs-lightcrane-contrib/common/keywordreplace v0.0.0-20211015185606-6baf0ec19706/go.mod h1:AuP9J9m+Jzf+wY6WkKPWn3569Y7YBOnwCEFJJ7WZQjA=
-github.com/SteveNY-Tibco/labs-lightcrane-contrib/common/util v0.0.0-20211015185606-6baf0ec19706 h1:VExuV8lFh4SfrRqWvCOh5fJ03zEcYlH0RbQYjbOmC8o=
-github.com/SteveNY-Tibco/labs-lightcrane-contrib/common/util v0.0.0-20211015185606-6baf0ec19706/go.mod h1:z0zOf2VBBhxv3rx+oixwEvLJfCqZFrxOjMgxMzlXbGw=
+github.com/SteveNY-Tibco/labs-lightcrane-contrib v0.0.0-20211020223348-6d58f8e7368d h1:9KJqr2idCA5bPlONAp2fM5+eAfmLM0PWHN3w6RV2sFk=
+github.com/SteveNY-Tibco/labs-lightcrane-contrib/common/keywordreplace v0.0.0-20211020223348-6d58f8e7368d h1:MFNzR/tcVCkfmODLj7TSqZ9dZYV6Z/5f4e4imbUm8HE=
+github.com/SteveNY-Tibco/labs-lightcrane-contrib/common/keywordreplace v0.0.0-20211020223348-6d58f8e7368d/go.mod h1:AuP9J9m+Jzf+wY6WkKPWn3569Y7YBOnwCEFJJ7WZQjA=
+github.com/SteveNY-Tibco/labs-lightcrane-contrib/common/util v0.0.0-20211020223348-6d58f8e7368d h1:k0CwxsaSW59rag7rgjVJBA9GJG84laTQbE8KdntrO8A=
+github.com/SteveNY-Tibco/labs-lightcrane-contrib/common/util v0.0.0-20211020223348-6d58f8e7368d/go.mod h1:z0zOf2VBBhxv3rx+oixwEvLJfCqZFrxOjMgxMzlXbGw=
 github.com/TIBCOSoftware/flogo-lib v0.5.8 h1:JX6PcxtyJbya++sKiWhFRADA6UnkSRS/INuTPzOMF0Y=
 github.com/TIBCOSoftware/flogo-lib v0.5.8/go.mod h1:AE7tfFBvQNemM61frHCwTJYBWC9+iXohXyqrApe6xj4=
 github.com/araddon/dateparse v0.0.0-20190622164848-0fb0a474d195 h1:c4mLfegoDw6OhSJXTd2jUEQgZUQuJWtocudb97Qn9EM=

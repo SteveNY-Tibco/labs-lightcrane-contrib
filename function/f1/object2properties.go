@@ -24,7 +24,7 @@ func (fnObject2Properties) Sig() (paramTypes []data.Type, isVariadic bool) {
 }
 
 func (fnObject2Properties) Eval(params ...interface{}) (interface{}, error) {
-	log.Info("(fnObject2Properties.Eval) params[0] : ", params[0], ", params[1]", params[1])
+	log.Debug("(fnObject2Properties.Eval) params[0] : ", params[0], ", params[1]", params[1])
 	object := params[0]
 	properties := make([]interface{}, 0)
 	if nil == object {
