@@ -41,7 +41,7 @@ type DataSource struct {
 }
 
 func (this DataSource) addNamespace4Properties(ID string) {
-	log.Info(">>>>>>>>>> Data source >>>>>>>>>>>>> Data = ", this.data)
+	log.Debug(">>>>>>>>>> Data source >>>>>>>>>>>>> Data = ", this.data)
 	handler := ObjectStringValueReplaceHandler{
 		ID: fmt.Sprintf("%s_", ID),
 	}
@@ -66,7 +66,7 @@ func (this DataSource) Build(subflowID string) {
 			})
 		}
 	}
-	log.Info(">>>>>>>>>> links >>>>>>>>>>>>> links = ", links)
+	log.Debug(">>>>>>>>>> links >>>>>>>>>>>>> links = ", links)
 	_ = objectbuilder.SetObject(
 		this.data, "root.resources[0].data.tasks[0].activity.input.message",
 		fmt.Sprintf("=string.concat(\"########## DataSource ##########\", coerce.toString($flow.data))"))
@@ -173,7 +173,7 @@ type Notifier struct {
 }
 
 func (this Notifier) addNamespace4Properties(ID string) {
-	log.Info(">>>>>>>>>> Notifier >>>>>>>>>>>>> Data = ", this.data)
+	log.Debug(">>>>>>>>>> Notifier >>>>>>>>>>>>> Data = ", this.data)
 }
 
 func (this Notifier) Build(subflowID string) {
@@ -253,7 +253,7 @@ func (this Notifier) GetConnections() interface{} {
 /* Logic Class */
 
 func NewLogic(category string, filename string, subflowActivity map[string]interface{}) (Logic, error) {
-	//log.Info(">>>>>>>>>> Logics >>>>>>>>>>>>> category = ", category, ", filename = ", filename)
+	//log.Debug(">>>>>>>>>> Logics >>>>>>>>>>>>> category = ", category, ", filename = ", filename)
 	data, err := FromFile(filename)
 	iDefaultActivities := objectbuilder.LocateObject(data, "root.resources[0].data.tasks[]")
 	var defaultActivities []interface{}
@@ -264,12 +264,12 @@ func NewLogic(category string, filename string, subflowActivity map[string]inter
 	/////////////////////////////////////////////////////////////////////////
 	subflowActivities := make(map[string]interface{})
 	subflowPosDef := objectbuilder.LocateObject(data, "root.resources[0].data.description")
-	//log.Info(">>>>>>>>>> Logics >>>>>>>>>>>>> subflowPosDef = ", subflowPosDef)
+	//log.Debug(">>>>>>>>>> Logics >>>>>>>>>>>>> subflowPosDef = ", subflowPosDef)
 	if nil != subflowPosDef && "" != subflowPosDef {
 		subflowPosStrArray := strings.Split(subflowPosDef.(string), "|")
-		//log.Info(">>>>>>>>>> Logics >>>>>>>>>>>>> subflowPosStrArray = ", subflowPosStrArray)
+		//log.Debug(">>>>>>>>>> Logics >>>>>>>>>>>>> subflowPosStrArray = ", subflowPosStrArray)
 		for _, posStr := range subflowPosStrArray {
-			//log.Info(">>>>>>>>>> Logics >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> posStr = ", posStr)
+			//log.Debug(">>>>>>>>>> Logics >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> posStr = ", posStr)
 			_, err := strconv.Atoi(posStr)
 			if nil != err {
 				return Logic{}, err
@@ -282,7 +282,7 @@ func NewLogic(category string, filename string, subflowActivity map[string]inter
 	} else {
 		subflowActivities[strconv.Itoa(len(defaultActivities)-1)] = util.DeepCopy(subflowActivity).(map[string]interface{})
 	}
-	//log.Info(">>>>>>>>>> Logics >>>>>>>>>>>>> subflowActivities = ", subflowActivities)
+	//log.Debug(">>>>>>>>>> Logics >>>>>>>>>>>>> subflowActivities = ", subflowActivities)
 	/////////////////////////////////////////////////////////////////////
 
 	return Logic{
@@ -443,7 +443,7 @@ func FromFile(filename string) (map[string]interface{}, error) {
 		return nil, err
 	}
 
-	//log.Info("[BasePipelineComponent:buildFromFile] FlogoTemplate : filename = ", filename, ", template = ", result)
+	//log.Debug("[BasePipelineComponent:buildFromFile] FlogoTemplate : filename = ", filename, ", template = ", result)
 	return result, nil
 }
 
@@ -459,7 +459,7 @@ func (this ObjectStringValueReplaceHandler) HandleElements(namespace objectbuild
 		log.Debug("(ObjectStringValueReplaceHandler HandleElements) Handle : element = ", element, ", type = ", dataType)
 		replacement := kwr.Replace(element.(string), "${{", "}}$", "ID", this.ID)
 		if replacement != element {
-			log.Info("(ObjectStringValueReplaceHandler HandleElements) Handle : element = ", element, ", type = ", dataType, ", replacement = ", replacement)
+			log.Debug("(ObjectStringValueReplaceHandler HandleElements) Handle : element = ", element, ", type = ", dataType, ", replacement = ", replacement)
 			return replacement
 		}
 	}

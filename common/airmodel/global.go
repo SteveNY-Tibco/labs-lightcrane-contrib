@@ -136,17 +136,17 @@ func (this *Properties) GetPropertyNameDef() map[string]interface{} {
 }
 
 func (this *Properties) GetReplacements(appPropertiesByComponent []interface{}) []interface{} {
-	log.Info("(Properties.GetReplacements) appPropertiesByComponent : ", appPropertiesByComponent)
+	log.Debug("(Properties.GetReplacements) appPropertiesByComponent : ", appPropertiesByComponent)
 	appProperties := make([]interface{}, 0)
 	/* loop for component in processing order */
 	for index, componentProperties := range appPropertiesByComponent {
-		log.Info("(Properties.GetReplacements) index : ", index)
+		log.Debug("(Properties.GetReplacements) index : ", index)
 		for _, property := range componentProperties.([]interface{}) {
 			name := property.(map[string]interface{})["Name"].(string)
-			log.Info("app property name: ", name)
+			log.Debug("app property name: ", name)
 			if nil != this.propertyMamingMap[index].(map[string]interface{})[name] {
 				name = this.propertyMamingMap[index].(map[string]interface{})[name].(string)
-				log.Info("app property name after: ", name)
+				log.Debug("app property name after: ", name)
 				property.(map[string]interface{})["Name"] = this.propertyMamingMap[index].(map[string]interface{})[property.(map[string]interface{})["Name"].(string)]
 				appProperties = append(appProperties, property)
 			}
