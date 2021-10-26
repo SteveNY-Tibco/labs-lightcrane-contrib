@@ -23,18 +23,23 @@ func (fnFolderExists) Sig() (paramTypes []data.Type, isVariadic bool) {
 }
 
 func (fnFolderExists) Eval(params ...interface{}) (interface{}, error) {
-	log.Debug("FolderExists.eval] entering ..... ")
-	defer log.Debug("FolderExists.eval] exit ..... ")
+	log.Info("FolderExists.eval] entering ..... ")
+	defer log.Info("FolderExists.eval] exit ..... ")
 
-	log.Debug("FolderExists.eval] folder name = ", params[0])
+	log.Info("FolderExists.eval] folder name = ", params[0])
 
 	exist := true
 	folderInfo, err := os.Stat(params[0].(string))
+
+	if nil != err {
+		log.Info("FolderExists.eval] err = ", err.Error())
+	}
+
 	if os.IsNotExist(err) {
 		exist = false
 	}
 
-	log.Debug("FolderExists.eval] folder info = ", folderInfo)
+	log.Info("FolderExists.eval] folder info = ", folderInfo, ", exists = ", exist)
 
 	return exist, nil
 }
