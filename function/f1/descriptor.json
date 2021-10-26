@@ -395,6 +395,20 @@
             }
         },
         {
+            "name": "folderexists",
+            "description": "Returns true : the input folder exists ",
+            "example": "f1.folderexists(<folder name>) => true|false",
+            "args": [
+                {
+                    "name": "foldername",
+                    "type": "string"
+                }
+            ],
+            "return": {
+                "type": "boolean"
+            }
+        },
+        {
             "name": "coalesceobject",
             "description": "Returns the first non-null input object",
             "example": "f1.coalescingobject(null, {}) => {}",
