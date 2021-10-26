@@ -29,7 +29,7 @@ func (fnFolderExists) Eval(params ...interface{}) (interface{}, error) {
 	log.Debug("FolderExists.eval] folder name = ", params[0])
 
 	exist := true
-	folderInfo, err := os.Stat("temp")
+	folderInfo, err := os.Stat(params[0].(string))
 	if os.IsNotExist(err) {
 		exist = false
 	}
