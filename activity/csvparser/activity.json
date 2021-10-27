@@ -1,7 +1,7 @@
 {
 	"name": "flogo-csvparser",
 	"type": "flogo:activity",
-	"ref": "github.com/TIBCOSoftware/GraphBuilder_Tools/activity/csvparser",
+	"ref": "github.com/SteveNY-Tibco/labs-lightcrane-contrib/activity/csvparser",
 	"version": "0.0.1",
 	"title": "CSV Parser",
 	"display": {
