@@ -112,19 +112,7 @@
                             }
                         }
                     }
-                ],
-                "metadata": {
-                    "input": [
-                        {
-                            "name": "Now",
-                            "type": "string"
-                        }
-                    ],
-                    "output": [],
-                    "fe_metadata": {
-                        "input": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"Now\":{\"type\":\"string\"}}}"
-                    }
-                }
+                ]
             }
         }
     ],
