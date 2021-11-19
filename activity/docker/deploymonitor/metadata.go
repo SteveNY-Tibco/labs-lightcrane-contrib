@@ -20,8 +20,7 @@ type Settings struct {
 }
 
 type Input struct {
-	Message     interface{}       `md:"message"`     // The message to send
-	TopicParams map[string]string `md:"topicParams"` // The topic parameters
+	Deployments interface{} `md:"message"` // The message to send
 }
 
 type Output struct {
