@@ -1,17 +1,15 @@
 package deploymonitor
 
 import (
-	"errors"
+	"context"
 	"fmt"
-	"strconv"
 	"strings"
-	"sync"
 	"time"
 
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/client"
 	"github.com/project-flogo/core/activity"
 	"github.com/project-flogo/core/data/metadata"
-	"github.com/project-flogo/core/support/log"
-	"github.com/project-flogo/core/support/ssl"
 )
 
 var activityMd = activity.ToMetadata(&Settings{}, &Input{}, &Output{})
