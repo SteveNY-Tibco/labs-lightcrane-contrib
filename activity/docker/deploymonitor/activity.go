@@ -51,16 +51,6 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 		return true, err
 	}
 
-	data := make([]interface{}, 1)
-	data[0] = map[string]interface{}{
-		"ProjectID": "Air-account_00001",
-		"Name":      "edgex_mqtt_mqtt_fs",
-	}
-
-	deployments := make(map[string]interface{})
-	deployments["Update"] = make([]interface{}, 0)
-	deployments["Remove"] = make([]interface{}, 0)
-
 	/*
 		ProjectID
 		Name
@@ -75,12 +65,12 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 	dctx := context.Background()
 	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 	if err != nil {
-		return
+		return false, err
 	}
 
 	containers, err := cli.ContainerList(dctx, types.ContainerListOptions{All: true})
 	if err != nil {
-		return
+		return false, err
 	}
 
 	currentDeploymnts := make([]interface{}, 0)
@@ -98,7 +88,11 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 	}
 
 	ctx.Logger().Info("(fnAirDeployMonitor:Eval) currentDeploymnts : ", currentDeploymnts)
-	ctx.Logger().Info("(fnAirDeployMonitor:Eval) deployments : ", deployments)
+
+	err = ctx.SetOutput("data", currentDeploymnts)
+	if err != nil {
+		return false, err
+	}
 
 	return true, nil
 }
