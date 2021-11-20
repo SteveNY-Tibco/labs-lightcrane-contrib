@@ -13,7 +13,7 @@ type Input struct {
 }
 
 type Output struct {
-	Data interface{} `md:"data"` // The data recieved
+	Data []interface{} `md:"data"` // The data recieved
 }
 
 func (i *Input) ToMap() map[string]interface{} {
@@ -39,6 +39,6 @@ func (o *Output) ToMap() map[string]interface{} {
 
 func (o *Output) FromMap(values map[string]interface{}) error {
 
-	o.Data = values["data"]
+	o.Data = values["data"].([]interface{})
 	return nil
 }

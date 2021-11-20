@@ -23,7 +23,8 @@
   "output": [
     {
       "name": "data",
-      "type": "object",
+      "type": "array",
+      "valueType": "object",
       "description": "The data recieved"
     }
   ]
