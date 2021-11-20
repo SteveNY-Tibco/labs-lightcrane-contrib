@@ -51,6 +51,7 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 	}
 
 	/*
+		ID
 		Domain
 		Name
 		Data {}
@@ -78,6 +79,7 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 		containerName := container.Names[0]
 		if strings.HasPrefix(containerName, "/Air-") {
 			currentDeploymnts = append(currentDeploymnts, map[string]interface{}{
+				"ID":           containerName[1:],
 				"Domain":       containerName[1:strings.Index(containerName, "_")],
 				"Name":         containerName[strings.Index(containerName, "_")+1:],
 				"Status":       container.Status,
