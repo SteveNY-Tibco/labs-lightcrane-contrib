@@ -77,7 +77,7 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 	for _, container := range containers {
 		ctx.Logger().Info(container.Names[0] + "-" + container.Status)
 		containerName := container.Names[0]
-		if strings.HasPrefix(containerName, "Air-") {
+		if strings.HasPrefix(containerName, "/Air-") {
 			currentDeploymnts = append(currentDeploymnts, map[string]interface{}{
 				"ProjectID":    containerName[0:strings.Index(containerName, "_")],
 				"Name":         containerName[0:strings.Index(containerName, "_")],
