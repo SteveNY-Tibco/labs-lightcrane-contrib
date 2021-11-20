@@ -20,7 +20,7 @@ type Settings struct {
 }
 
 type Input struct {
-	Deployments interface{} `md:"message"` // The message to send
+	Now int64 `md:"now"` // Current time
 }
 
 type Output struct {
@@ -29,15 +29,13 @@ type Output struct {
 
 func (i *Input) ToMap() map[string]interface{} {
 	return map[string]interface{}{
-		"message":     i.Message,
-		"topicParams": i.TopicParams,
+		"now": i.Now,
 	}
 }
 
 func (i *Input) FromMap(values map[string]interface{}) error {
 	var err error
-	i.Message, _ = values["message"]
-	i.TopicParams, err = coerce.ToParams(values["topicParams"])
+	i.Now, err = coerce.ToInt64(values["now"])
 	if err != nil {
 		return err
 	}

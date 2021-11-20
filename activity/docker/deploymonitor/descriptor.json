@@ -91,14 +91,9 @@
   ],
   "input": [
     {
-      "name": "message",
-      "type": "string",
-      "description": "The message to send"
-    },
-    {
-      "name": "topicParams",
-      "type": "params",
-      "description": "The topic parameters"
+      "name": "now",
+      "type": "int64",
+      "description": "Current time"
     }
   ],
   "output": [

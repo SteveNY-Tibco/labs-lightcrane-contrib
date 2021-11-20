@@ -87,19 +87,18 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 	for _, container := range containers {
 		ctx.Logger().Info(container.Names[0] + "-" + container.Status)
 		containerName := container.Names[0]
-		if strings.HasPrefix("Air-") {
+		if strings.HasPrefix(containerName, "Air-") {
 			currentDeploymnts = append(currentDeploymnts, map[string]interface{}{
-				"ProjectID": containerName[0:strings.Index(containerName, "_")],
-				"Name":      containerName[0:strings.Index(containerName, "_")],
-				"Status":    container.Status,
+				"ProjectID":    containerName[0:strings.Index(containerName, "_")],
+				"Name":         containerName[0:strings.Index(containerName, "_")],
+				"Status":       container.Status,
+				"LastModified": time.Now().Unix(),
 			})
 		}
 	}
 
 	ctx.Logger().Info("(fnAirDeployMonitor:Eval) currentDeploymnts : ", currentDeploymnts)
 	ctx.Logger().Info("(fnAirDeployMonitor:Eval) deployments : ", deployments)
-
-	ctx.Logger().Debugf("Published Message: %v", input.Message)
 
 	return true, nil
 }
@@ -147,13 +146,13 @@ func (a *Activity) Evalx(ctx activity.Context) (done bool, err error) {
 	fmt.Println("(fnAirDeployMonitor:Eval) registered deployments : ", registeredDeployments)
 
 	/* query docker container */
-	ctx := context.Background()
+	dctx := context.Background()
 	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 	if err != nil {
 		return
 	}
 
-	containers, err := cli.ContainerList(ctx, types.ContainerListOptions{All: true})
+	containers, err := cli.ContainerList(dctx, types.ContainerListOptions{All: true})
 	if err != nil {
 		return
 	}
@@ -171,8 +170,6 @@ func (a *Activity) Evalx(ctx activity.Context) (done bool, err error) {
 
 	ctx.Logger().Info("(fnAirDeployMonitor:Eval) currentDeploymnts : ", currentDeploymnts)
 	ctx.Logger().Info("(fnAirDeployMonitor:Eval) deployments : ", deployments)
-
-	ctx.Logger().Debugf("Published Message: %v", input.Message)
 
 	return true, nil
 }
