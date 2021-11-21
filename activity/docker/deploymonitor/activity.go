@@ -56,6 +56,7 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 		Name
 		Data {}
 		Status
+		Reporter
 		LastModified
 		ErrorCode
 		ErrorMessage
@@ -85,6 +86,7 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 				"Domain":       containerName[1:strings.Index(containerName, name)],
 				"Name":         name[1:],
 				"Status":       container.Status,
+				"Reporter":     "Deployer",
 				"LastModified": time.Now().Unix(),
 			})
 		}
