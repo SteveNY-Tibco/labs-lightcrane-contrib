@@ -83,7 +83,7 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 			currentDeploymnts = append(currentDeploymnts, map[string]interface{}{
 				"ID":           containerName[1:],
 				"Domain":       containerName[1:strings.Index(containerName, name)],
-				"Name":         name,
+				"Name":         name[1:],
 				"Status":       container.Status,
 				"LastModified": time.Now().Unix(),
 			})
