@@ -77,11 +77,13 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 	for _, container := range containers {
 		ctx.Logger().Info(container.Names[0] + "-" + container.Status)
 		containerName := container.Names[0]
+
 		if strings.HasPrefix(containerName, "/Air-") {
+			name := containerName[strings.Index(containerName[strings.Index(containerName, "_")+1:], "_")+len(containerName[0:strings.Index(containerName, "_")])+1:]
 			currentDeploymnts = append(currentDeploymnts, map[string]interface{}{
 				"ID":           containerName[1:],
-				"Domain":       containerName[1:strings.Index(containerName, "_")],
-				"Name":         containerName[strings.Index(containerName, "_")+1:],
+				"Domain":       containerName[1:strings.Index(containerName, name)],
+				"Name":         name,
 				"Status":       container.Status,
 				"LastModified": time.Now().Unix(),
 			})
