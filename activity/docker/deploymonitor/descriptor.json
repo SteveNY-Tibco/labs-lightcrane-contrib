@@ -18,6 +18,12 @@
       "name": "now",
       "type": "int64",
       "description": "Current time"
+    },
+    {
+      "name": "currentDeployments",
+      "type": "array",
+      "valueType": "object",
+      "description": "Current registered deployments"
     }
   ],
   "output": [
@@ -25,7 +31,7 @@
       "name": "data",
       "type": "array",
       "valueType": "object",
-      "description": "The data recieved"
+      "description": "Deployment Updates"
     }
   ]
 }

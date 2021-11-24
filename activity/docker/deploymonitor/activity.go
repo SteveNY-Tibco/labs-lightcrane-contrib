@@ -43,24 +43,15 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 	defer ctx.Logger().Info("(fnAirDeployMonitor:Eval) exit ........ ")
 
 	input := &Input{}
-
 	err = ctx.GetInputObject(input)
-
 	if err != nil {
 		return true, err
 	}
 
-	/*
-		ID
-		Domain
-		Name
-		Data {}
-		Status
-		Reporter
-		LastModified
-		ErrorCode
-		ErrorMessage
-	*/
+	registeredDeploymentMap := make(map[string]interface{})
+	for _, registeredDeployment := range input.CurrentRegisteredDeployments {
+		registeredDeploymentMap[registeredDeployment.(map[string]interface{})["ID"].(string)] = registeredDeployment
+	}
 
 	/* query docker container */
 	dctx := context.Background()
@@ -78,18 +69,44 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 	for _, container := range containers {
 		ctx.Logger().Info(container.Names[0] + "-" + container.Status)
 		containerName := container.Names[0]
+		ID := containerName[1:]
 
-		if strings.HasPrefix(containerName, "/Air-") {
+		/*
+			Delete
+			ID
+			Domain
+			Name
+			Data {}
+			Status
+			ContainerStatus
+			Reporter
+			LastModified
+			ErrorCode
+			ErrorMessage
+		*/
+		if nil != registeredDeploymentMap[ID] {
+			status := registeredDeploymentMap[ID].(map[string]interface{})["Properties"].(map[string]interface{})["Status"]
 			name := containerName[strings.Index(containerName[strings.Index(containerName, "_")+1:], "_")+len(containerName[0:strings.Index(containerName, "_")])+1:]
 			currentDeploymnts = append(currentDeploymnts, map[string]interface{}{
-				"ID":           containerName[1:],
-				"Domain":       containerName[1:strings.Index(containerName, name)],
-				"Name":         name[1:],
-				"Status":       container.Status,
-				"Reporter":     "Deployer",
-				"LastModified": time.Now().Unix(),
+				"ID":              ID,
+				"Domain":          containerName[1:strings.Index(containerName, name)],
+				"Name":            name[1:],
+				"Status":          status,
+				"ContainerStatus": container.Status,
+				"Reporter":        "Deployer",
+				"LastModified":    time.Now().Unix(),
+				"Delete":          false,
 			})
+			delete(registeredDeploymentMap, ID)
 		}
+	}
+
+	for ID, _ := range registeredDeploymentMap {
+		currentDeploymnts = append(currentDeploymnts, map[string]interface{}{
+			"ID":     ID,
+			"Delete": true,
+		})
+
 	}
 
 	ctx.Logger().Info("(fnAirDeployMonitor:Eval) currentDeploymnts : ", currentDeploymnts)
