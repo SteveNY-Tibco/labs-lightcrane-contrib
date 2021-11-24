@@ -53,6 +53,8 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 		registeredDeploymentMap[registeredDeployment.(map[string]interface{})["ID"].(string)] = registeredDeployment
 	}
 
+	ctx.Logger().Info("(fnAirDeployMonitor:Eval) registeredDeploymentMap : ", registeredDeploymentMap)
+
 	/* query docker container */
 	dctx := context.Background()
 	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
@@ -70,6 +72,8 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 		ctx.Logger().Info(container.Names[0] + "-" + container.Status)
 		containerName := container.Names[0]
 		ID := containerName[1:]
+
+		ctx.Logger().Info("(fnAirDeployMonitor:Eval) ID : ", ID)
 
 		/*
 			Delete
