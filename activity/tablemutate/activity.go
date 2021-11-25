@@ -67,7 +67,7 @@ func (a *TableMutateActivity) Eval(ctx activity.Context) (done bool, err error) 
 
 	iData := ctx.GetInput(input).(*data.ComplexObject).Value
 
-	log.Debug("(Eval)iData.Value = ", iData, ", type = ", reflect.TypeOf(iData))
+	log.Info("(Eval)iData.Value = ", iData, ", type = ", reflect.TypeOf(iData))
 
 	methodSetting, _ := ctx.GetSetting(setting_Method)
 	method := methodSetting.(string)
@@ -86,7 +86,7 @@ func (a *TableMutateActivity) Eval(ctx activity.Context) (done bool, err error) 
 		"Old": oldRecord,
 	}
 
-	log.Debug("(Eval)output tuple = ", outputTuple, ", exist = ", exists, ", row count = ", myTable.RowCount())
+	log.Info("(Eval)output tuple = ", outputTuple, ", exist = ", exists, ", row count = ", myTable.RowCount())
 
 	complexdata := &data.ComplexObject{Metadata: "Data", Value: outputTuple}
 	ctx.SetOutput(output_Data, complexdata)
