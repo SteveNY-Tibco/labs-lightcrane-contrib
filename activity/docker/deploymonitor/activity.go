@@ -106,13 +106,15 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 		}
 	}
 
-	for ID, _ := range registeredDeploymentMap {
-		currentDeploymnts = append(currentDeploymnts, map[string]interface{}{
-			"ID":       ID,
-			"Delete":   true,
-			"Location": "localhost",
-		})
-
+	for ID, registeredDeployment := range registeredDeploymentMap {
+		status := registeredDeployment.(map[string]interface{})["Properties"].(map[string]interface{})["Status"]
+		if "Undeploying" == status {
+			currentDeploymnts = append(currentDeploymnts, map[string]interface{}{
+				"ID":       ID,
+				"Delete":   true,
+				"Location": "localhost",
+			})
+		}
 	}
 
 	ctx.Logger().Info("(fnAirDeployMonitor:Eval) currentDeploymnts : ", currentDeploymnts)
