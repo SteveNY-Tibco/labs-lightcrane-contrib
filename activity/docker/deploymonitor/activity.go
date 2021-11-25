@@ -108,8 +108,9 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 
 	for ID, _ := range registeredDeploymentMap {
 		currentDeploymnts = append(currentDeploymnts, map[string]interface{}{
-			"ID":     ID,
-			"Delete": true,
+			"ID":       ID,
+			"Delete":   true,
+			"Location": "localhost",
 		})
 
 	}
