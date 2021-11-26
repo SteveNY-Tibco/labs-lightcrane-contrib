@@ -73,7 +73,7 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 		containerName := container.Names[0]
 		ID := containerName[1:]
 
-		ctx.Logger().Info("(fnAirDeployMonitor:Eval) ID : ", ID)
+		ctx.Logger().Debug("(fnAirDeployMonitor:Eval) ID : ", ID)
 
 		/*
 			Delete
