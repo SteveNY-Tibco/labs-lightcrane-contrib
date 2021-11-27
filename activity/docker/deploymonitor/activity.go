@@ -69,7 +69,7 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 
 	currentDeploymnts := make([]interface{}, 0)
 	for _, container := range containers {
-		ctx.Logger().Info(container.Names[0] + "-" + container.Status)
+		ctx.Logger().Debug(container.Names[0] + "-" + container.Status)
 		containerName := container.Names[0]
 		ID := containerName[1:]
 
