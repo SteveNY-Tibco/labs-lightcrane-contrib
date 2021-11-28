@@ -39,8 +39,8 @@ func (a *Activity) Metadata() *activity.Metadata {
 }
 
 func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
-	ctx.Logger().Info("(fnAirDeployMonitor:Eval) entering ........ ")
-	defer ctx.Logger().Info("(fnAirDeployMonitor:Eval) exit ........ ")
+	ctx.Logger().Info("(AirDeployMonitor:Eval) entering ........ ")
+	defer ctx.Logger().Info("(AirDeployMonitor:Eval) exit ........ ")
 
 	input := &Input{}
 	err = ctx.GetInputObject(input)
@@ -53,7 +53,7 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 		registeredDeploymentMap[registeredDeployment.(map[string]interface{})["ID"].(string)] = registeredDeployment
 	}
 
-	ctx.Logger().Info("(fnAirDeployMonitor:Eval) registeredDeploymentMap : ", registeredDeploymentMap)
+	ctx.Logger().Info("(AirDeployMonitor:Eval) registeredDeploymentMap : ", registeredDeploymentMap)
 
 	/* query docker container */
 	dctx := context.Background()
@@ -73,7 +73,7 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 		containerName := container.Names[0]
 		ID := containerName[1:]
 
-		ctx.Logger().Debug("(fnAirDeployMonitor:Eval) ID : ", ID)
+		ctx.Logger().Debug("(AirDeployMonitor:Eval) ID : ", ID)
 
 		/*
 			Delete
@@ -114,15 +114,16 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 	for ID, registeredDeployment := range registeredDeploymentMap {
 		status := registeredDeployment.(map[string]interface{})["Properties"].(map[string]interface{})["Status"]
 		if "Undeploying" == status {
+			location := registeredDeploymentMap[ID].(map[string]interface{})["Location"].(string)
 			currentDeploymnts = append(currentDeploymnts, map[string]interface{}{
 				"ID":       ID,
 				"Delete":   true,
-				"Location": "localhost",
+				"Location": location,
 			})
 		}
 	}
 
-	ctx.Logger().Info("(fnAirDeployMonitor:Eval) currentDeploymnts : ", currentDeploymnts)
+	ctx.Logger().Info("(AirDeployMonitor:Eval) currentDeploymnts : ", currentDeploymnts)
 
 	err = ctx.SetOutput("data", currentDeploymnts)
 	if err != nil {
