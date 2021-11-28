@@ -10,7 +10,7 @@ type Settings struct {
 
 type Input struct {
 	Now                          int64         `md:"now"`                // Current time
-	Location                     string        `md:"location"`           // deployment location
+	Location                     string        `md:"location"`           // Deployment location
 	CurrentRegisteredDeployments []interface{} `md:"currentDeployments"` // Current registered deployments
 }
 

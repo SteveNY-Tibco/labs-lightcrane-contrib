@@ -16,8 +16,13 @@
   "input": [
     {
       "name": "now",
-      "type": "int64",
+      "type": "int",
       "description": "Current time"
+    },
+    {
+      "name": "location",
+      "type": "string",
+      "description": "Deployment location"
     },
     {
       "name": "currentDeployments",
