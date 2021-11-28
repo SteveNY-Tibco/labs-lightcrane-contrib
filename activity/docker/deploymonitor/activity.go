@@ -89,22 +89,24 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 			ErrorMessage
 		*/
 		if nil != registeredDeploymentMap[ID] {
-			status := registeredDeploymentMap[ID].(map[string]interface{})["Properties"].(map[string]interface{})["Status"]
-			name := containerName[strings.Index(containerName[strings.Index(containerName, "_")+1:], "_")+len(containerName[0:strings.Index(containerName, "_")])+1:]
-			if "Deploying" == status {
-				status = "Deployed"
+			location := registeredDeploymentMap[ID].(map[string]interface{})["Location"].(string)
+			if "localhost" == location {
+				status := registeredDeploymentMap[ID].(map[string]interface{})["Properties"].(map[string]interface{})["Status"]
+				name := containerName[strings.Index(containerName[strings.Index(containerName, "_")+1:], "_")+len(containerName[0:strings.Index(containerName, "_")])+1:]
+				if "Deploying" == status {
+					status = "Deployed"
+				}
+				currentDeploymnts = append(currentDeploymnts, map[string]interface{}{
+					"ID":              ID,
+					"Domain":          containerName[1:strings.Index(containerName, name)],
+					"Name":            name[1:],
+					"Status":          status,
+					"ContainerStatus": container.Status,
+					"Reporter":        "Deployer",
+					"LastModified":    time.Now().Unix(),
+					"Delete":          false,
+				})
 			}
-			currentDeploymnts = append(currentDeploymnts, map[string]interface{}{
-				"ID":              ID,
-				"Domain":          containerName[1:strings.Index(containerName, name)],
-				"Name":            name[1:],
-				"Status":          status,
-				"ContainerStatus": container.Status,
-				"Reporter":        "Deployer",
-				"LastModified":    time.Now().Unix(),
-				"Delete":          false,
-				"Location":        "localhost",
-			})
 			delete(registeredDeploymentMap, ID)
 		}
 	}
