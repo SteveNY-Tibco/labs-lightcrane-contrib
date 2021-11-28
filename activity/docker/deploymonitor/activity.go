@@ -89,8 +89,7 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 			ErrorMessage
 		*/
 		if nil != registeredDeploymentMap[ID] {
-			location := registeredDeploymentMap[ID].(map[string]interface{})["Location"].(string)
-			if "localhost" == location {
+			if input.Location == registeredDeploymentMap[ID].(map[string]interface{})["Location"].(string) {
 				status := registeredDeploymentMap[ID].(map[string]interface{})["Properties"].(map[string]interface{})["Status"]
 				name := containerName[strings.Index(containerName[strings.Index(containerName, "_")+1:], "_")+len(containerName[0:strings.Index(containerName, "_")])+1:]
 				if "Deploying" == status {
@@ -114,11 +113,10 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 	for ID, registeredDeployment := range registeredDeploymentMap {
 		status := registeredDeployment.(map[string]interface{})["Properties"].(map[string]interface{})["Status"]
 		if "Undeploying" == status {
-			location := registeredDeploymentMap[ID].(map[string]interface{})["Location"].(string)
 			currentDeploymnts = append(currentDeploymnts, map[string]interface{}{
 				"ID":       ID,
 				"Delete":   true,
-				"Location": location,
+				"Location": input.Location,
 			})
 		}
 	}
