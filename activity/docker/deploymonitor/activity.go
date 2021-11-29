@@ -104,6 +104,7 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 					"Reporter":        "Deployer",
 					"LastModified":    time.Now().Unix(),
 					"Delete":          false,
+					"Location":        input.Location,
 				})
 			}
 			delete(registeredDeploymentMap, ID)
