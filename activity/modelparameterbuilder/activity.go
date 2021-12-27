@@ -91,8 +91,8 @@ func (a *ModelParameterBuilderActivity) Metadata() *activity.Metadata {
 
 func (a *ModelParameterBuilderActivity) Eval(context activity.Context) (done bool, err error) {
 
-	log.Debug("[ModelParameterBuilderActivity:Eval] entering ........ ")
-	defer log.Debug("[ModelParameterBuilderActivity:Eval] Exit ........ ")
+	log.Info("[ModelParameterBuilderActivity:Eval] entering ........ ")
+	defer log.Info("[ModelParameterBuilderActivity:Eval] Exit ........ ")
 
 	_, gProperties, err := a.getTemplateLibrary(context)
 	if err != nil {
@@ -103,13 +103,13 @@ func (a *ModelParameterBuilderActivity) Eval(context activity.Context) (done boo
 	if !ok {
 		return false, errors.New("Invalid Service Type ... ")
 	}
-	log.Debug("[ModelParameterBuilderActivity:Eval]  Name : ", serviceType)
+	log.Info("[ModelParameterBuilderActivity:Eval]  Name : ", serviceType)
 
 	flogoAppDescriptor, ok := context.GetInput(iFlogoAppDescriptor).(map[string]interface{})
 	if !ok {
 		return false, errors.New("Invalid Flogo Application Descriptor ... ")
 	}
-	log.Debug("[ModelParameterBuilderActivity:Eval]  Flogo Application Descriptor : ", flogoAppDescriptor)
+	log.Info("[ModelParameterBuilderActivity:Eval]  Flogo Application Descriptor : ", flogoAppDescriptor)
 
 	/*********************************
 	        Construct Pipeline
@@ -119,13 +119,13 @@ func (a *ModelParameterBuilderActivity) Eval(context activity.Context) (done boo
 	var appProperties []interface{}
 	var extraArray []interface{}
 
-	log.Debug("[ModelParameterBuilderActivity:Eval] entering ........ 1")
+	log.Info("[ModelParameterBuilderActivity:Eval] entering ........ 1")
 	/* If any server port defined */
 	if nil != flogoAppDescriptor[iPorts] {
 		ports = flogoAppDescriptor[iPorts].([]interface{})
 	}
 
-	log.Debug("[ModelParameterBuilderActivity:Eval] entering ........ 2")
+	log.Info("[ModelParameterBuilderActivity:Eval] entering ........ 2")
 	/* Extrace Daynamic Parameter From DataSource */
 	if nil != flogoAppDescriptor[iProperties] {
 		appProperties = flogoAppDescriptor[iProperties].([]interface{})
@@ -137,7 +137,7 @@ func (a *ModelParameterBuilderActivity) Eval(context activity.Context) (done boo
 	//		"Value": "auto",
 	//	})
 
-	log.Debug("[ModelParameterBuilderActivity:Eval] entering ........ 3")
+	log.Info("[ModelParameterBuilderActivity:Eval] entering ........ 3")
 	if nil != flogoAppDescriptor[iExtra] {
 		extraArray = flogoAppDescriptor[iExtra].([]interface{})
 		for _, property := range extraArray {
@@ -153,7 +153,7 @@ func (a *ModelParameterBuilderActivity) Eval(context activity.Context) (done boo
 	} else {
 		extraArray = make([]interface{}, 0)
 	}
-	log.Debug("[ModelParameterBuilderActivity:Eval] entering ........ 4")
+	log.Info("[ModelParameterBuilderActivity:Eval] entering ........ 4")
 
 	/*********************************
 	    Construct Dynamic Parameter
@@ -177,7 +177,7 @@ func (a *ModelParameterBuilderActivity) Eval(context activity.Context) (done boo
 	} else {
 		propertyPrefix = pathMapper.Replace(propertyPrefix, defVariable)
 	}
-	log.Debug("[ModelParameterBuilderActivity:Eval]  Property Prefix : ", propertyPrefix)
+	log.Info("[ModelParameterBuilderActivity:Eval]  Property Prefix : ", propertyPrefix)
 
 	var f1Properties interface{}
 	switch serviceType {
@@ -203,7 +203,7 @@ func (a *ModelParameterBuilderActivity) Eval(context activity.Context) (done boo
 
 	context.SetOutput(oF1Properties, f1Properties)
 	context.SetOutput(oPropertyNameDef, propertyNameDef)
-	log.Debug("[PipelineBuilderActivity:Eval]PropertyNameDef = ", propertyNameDef)
+	log.Info("[PipelineBuilderActivity:Eval]PropertyNameDef = ", propertyNameDef)
 
 	return true, nil
 }
@@ -230,11 +230,11 @@ func (a *ModelParameterBuilderActivity) createDockerF1Properties(
 		if nil != err {
 			return nil, err
 		}
-		log.Debug("[createDockerF1Properties] Name = ", property["Name"], ", Raw Value = ", value, ", defVariable = ", defVariable)
+		log.Info("[createDockerF1Properties] Name = ", property["Name"], ", Raw Value = ", value, ", defVariable = ", defVariable)
 
 		if "String" == dtype {
 			value = pathMapper.Replace(value.(string), defVariable)
-			log.Debug("[createDockerF1Properties] Value after replace = ", value)
+			log.Info("[createDockerF1Properties] Value after replace = ", value)
 			sValue := value.(string)
 			if "" != sValue && sValue[0] == '$' && sValue[len(sValue)-1] == '$' {
 				continue
@@ -403,8 +403,8 @@ func (a *ModelParameterBuilderActivity) createK8sF1Properties(
 
 func (a *ModelParameterBuilderActivity) getTemplateLibrary(ctx activity.Context) (*model.FlogoTemplateLibrary, []map[string]interface{}, error) {
 
-	log.Debug("[ModelParameterBuilderActivity:getTemplate] entering ........ ")
-	defer log.Debug("[ModelParameterBuilderActivity:getTemplate] exit ........ ")
+	log.Info("[ModelParameterBuilderActivity:getTemplate] entering ........ ")
+	defer log.Info("[ModelParameterBuilderActivity:getTemplate] exit ........ ")
 
 	myId := util.ActivityId(ctx)
 	templateLib := a.templates[myId]
@@ -453,7 +453,7 @@ func (a *ModelParameterBuilderActivity) getVariableMapper(ctx activity.Context) 
 		if nil == mapper {
 			variables = make(map[string]string)
 			variablesDef, ok := ctx.GetSetting(sVariablesDef)
-			log.Debug("Processing handlers : variablesDef = ", variablesDef)
+			log.Info("Processing handlers : variablesDef = ", variablesDef)
 			if ok && nil != variablesDef {
 				for _, variableDef := range variablesDef.([]interface{}) {
 					variableInfo := variableDef.(map[string]interface{})
