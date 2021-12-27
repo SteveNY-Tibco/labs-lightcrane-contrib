@@ -132,10 +132,6 @@ func (a *ModelParameterBuilderActivity) Eval(context activity.Context) (done boo
 	} else {
 		appProperties = make([]interface{}, 0)
 	}
-	//	appProperties = append(appProperties, map[string]interface{}{
-	//		"Name":  "FLOGO_APP_PROPS_ENV",
-	//		"Value": "auto",
-	//	})
 
 	log.Info("[ModelParameterBuilderActivity:Eval] entering ........ 3")
 	if nil != flogoAppDescriptor[iExtra] {
