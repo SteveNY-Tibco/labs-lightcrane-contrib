@@ -119,11 +119,13 @@ func (a *ModelParameterBuilderActivity) Eval(context activity.Context) (done boo
 	var appProperties []interface{}
 	var extraArray []interface{}
 
+	log.Debug("[ModelParameterBuilderActivity:Eval] entering ........ 1")
 	/* If any server port defined */
 	if nil != flogoAppDescriptor[iPorts] {
 		ports = flogoAppDescriptor[iPorts].([]interface{})
 	}
 
+	log.Debug("[ModelParameterBuilderActivity:Eval] entering ........ 2")
 	/* Extrace Daynamic Parameter From DataSource */
 	if nil != flogoAppDescriptor[iProperties] {
 		appProperties = flogoAppDescriptor[iProperties].([]interface{})
@@ -135,6 +137,7 @@ func (a *ModelParameterBuilderActivity) Eval(context activity.Context) (done boo
 	//		"Value": "auto",
 	//	})
 
+	log.Debug("[ModelParameterBuilderActivity:Eval] entering ........ 3")
 	if nil != flogoAppDescriptor[iExtra] {
 		extraArray = flogoAppDescriptor[iExtra].([]interface{})
 		for _, property := range extraArray {
@@ -150,6 +153,7 @@ func (a *ModelParameterBuilderActivity) Eval(context activity.Context) (done boo
 	} else {
 		extraArray = make([]interface{}, 0)
 	}
+	log.Debug("[ModelParameterBuilderActivity:Eval] entering ........ 4")
 
 	/*********************************
 	    Construct Dynamic Parameter
