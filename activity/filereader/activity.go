@@ -42,14 +42,14 @@ func (a *FileReaderActivity) Metadata() *activity.Metadata {
 }
 
 func (a *FileReaderActivity) Eval(context activity.Context) (done bool, err error) {
-	log.Debug("(FileReaderActivity.Eval) Entering ......... ")
-	defer log.Debug("(FileReaderActivity.Eval) Exit ......... ")
+	log.Info("(FileReaderActivity.Eval) Entering ......... ")
+	defer log.Info("(FileReaderActivity.Eval) Exit ......... ")
 
 	baseFolder, err := a.getBaseFolder(context)
 	if nil != err {
 		return false, err
 	}
-	log.Debug("(FileReaderActivity.Eval) Output base folder = ", baseFolder)
+	log.Info("(FileReaderActivity.Eval) Output base folder = ", baseFolder)
 
 	a.mux.Lock()
 	defer a.mux.Unlock()
@@ -62,7 +62,7 @@ func (a *FileReaderActivity) Eval(context activity.Context) (done bool, err erro
 
 	matches, err := filepath.Glob(filePattern)
 
-	log.Debug("(FileReaderActivity.Eval) File pattern : ", filePattern)
+	log.Info("(FileReaderActivity.Eval) File pattern : ", filePattern)
 
 	results := make([]map[string]interface{}, 0)
 	for _, filename := range matches {
@@ -72,6 +72,7 @@ func (a *FileReaderActivity) Eval(context activity.Context) (done bool, err erro
 		}
 		results = append(results, map[string]interface{}{"Filename": filename, "Content": content})
 	}
+	log.Info("(FileReaderActivity.Eval) results : ", results)
 	context.SetOutput(oResults, results)
 
 	return true, nil
