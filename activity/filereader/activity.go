@@ -61,6 +61,10 @@ func (a *FileReaderActivity) Eval(context activity.Context) (done bool, err erro
 	}
 
 	matches, err := filepath.Glob(filePattern)
+	if nil != err {
+		log.Error("(FileReaderActivity.Eval) err : ", err)
+		return false, err
+	}
 
 	log.Info("(FileReaderActivity.Eval) File pattern : ", filePattern)
 
