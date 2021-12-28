@@ -94,11 +94,6 @@ func (a *ModelParameterBuilderActivity) Eval(context activity.Context) (done boo
 	log.Info("[ModelParameterBuilderActivity:Eval] entering ........ ")
 	defer log.Info("[ModelParameterBuilderActivity:Eval] Exit ........ ")
 
-	_, gProperties, err := a.getTemplateLibrary(context)
-	if err != nil {
-		return false, err
-	}
-
 	serviceType, ok := context.GetInput(iServiceType).(string)
 	if !ok {
 		return false, errors.New("Invalid Service Type ... ")
@@ -134,6 +129,7 @@ func (a *ModelParameterBuilderActivity) Eval(context activity.Context) (done boo
 	}
 
 	log.Info("[ModelParameterBuilderActivity:Eval] entering ........ 3")
+	gProperties := make([]map[string]interface{}, 0)
 	if nil != flogoAppDescriptor[iExtra] {
 		extraArray = flogoAppDescriptor[iExtra].([]interface{})
 		for _, property := range extraArray {
@@ -395,46 +391,6 @@ func (a *ModelParameterBuilderActivity) createK8sF1Properties(
 	}
 
 	return description, nil
-}
-
-func (a *ModelParameterBuilderActivity) getTemplateLibrary(ctx activity.Context) (*model.FlogoTemplateLibrary, []map[string]interface{}, error) {
-
-	log.Info("[ModelParameterBuilderActivity:getTemplate] entering ........ ")
-	defer log.Info("[ModelParameterBuilderActivity:getTemplate] exit ........ ")
-
-	myId := util.ActivityId(ctx)
-	templateLib := a.templates[myId]
-	gProperties := a.gProperties[myId]
-
-	if nil == templateLib {
-		a.mux.Lock()
-		defer a.mux.Unlock()
-		templateLib = a.templates[myId]
-		gProperties = a.gProperties[myId]
-		if nil == templateLib {
-			templateFolderSetting, exist := ctx.GetSetting(sTemplateFolder)
-			if !exist {
-				return nil, nil, activity.NewError("Template is not configured", "PipelineBuilder-4002", nil)
-			}
-			templateFolder := templateFolderSetting.(string)
-			var err error
-			templateLib, err = model.NewFlogoTemplateLibrary(templateFolder)
-			if nil != err {
-				return nil, nil, err
-			}
-
-			a.templates[myId] = templateLib
-			gPropertiesSetting, exist := ctx.GetSetting(sProperties)
-			gProperties = make([]map[string]interface{}, 0)
-			if exist {
-				for _, gProperty := range gPropertiesSetting.([]interface{}) {
-					gProperties = append(gProperties, gProperty.(map[string]interface{}))
-				}
-			}
-			a.gProperties[myId] = gProperties
-		}
-	}
-	return templateLib, gProperties, nil
 }
 
 func (a *ModelParameterBuilderActivity) getVariableMapper(ctx activity.Context) (*kwr.KeywordMapper, map[string]string, error) {
