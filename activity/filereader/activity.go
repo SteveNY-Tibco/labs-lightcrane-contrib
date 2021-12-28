@@ -66,7 +66,7 @@ func (a *FileReaderActivity) Eval(context activity.Context) (done bool, err erro
 		return false, err
 	}
 
-	log.Info("(FileReaderActivity.Eval) File pattern : ", filePattern)
+	log.Info("(FileReaderActivity.Eval) File pattern : ", filePattern, ", matches : ", matches)
 
 	results := make([]map[string]interface{}, 0)
 	for _, filename := range matches {
