@@ -103,7 +103,9 @@ func (a *FileReaderActivity) getBaseFolder(context activity.Context) (string, er
 }
 
 func readFile(filename string) (string, error) {
+	log.Info("(FileReaderActivity.readFile) filename = ", filename)
 	fileContent, err := ioutil.ReadFile(filename)
+	log.Info("(FileReaderActivity.readFile) fileContent = ", fileContent)
 	if err != nil {
 		log.Error("File reading error", err)
 		return "", err
