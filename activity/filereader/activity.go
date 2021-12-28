@@ -68,6 +68,7 @@ func (a *FileReaderActivity) Eval(context activity.Context) (done bool, err erro
 	for _, filename := range matches {
 		content, err := readFile(filename)
 		if nil != err {
+			log.Error("(FileReaderActivity.Eval) err : ", err)
 			continue
 		}
 		results = append(results, map[string]interface{}{"Filename": filename, "Content": content})
