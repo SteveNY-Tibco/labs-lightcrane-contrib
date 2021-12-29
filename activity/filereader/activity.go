@@ -8,6 +8,7 @@ package filereader
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
 	"path/filepath"
 	"sync"
 
@@ -51,13 +52,16 @@ func (a *FileReaderActivity) Eval(context activity.Context) (done bool, err erro
 	}
 	log.Info("(FileReaderActivity.Eval) Output base folder = ", baseFolder)
 
-	files, err := ioutil.ReadDir(baseFolder)
+	err = filepath.Walk(baseFolder, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			log.Error(err)
+			return err
+		}
+		log.Info("dir: %v: name: %s\n", info.IsDir(), path)
+		return nil
+	})
 	if err != nil {
 		log.Error(err)
-	}
-
-	for _, file := range files {
-		log.Info("(FileReaderActivity.Eval) Output filename = ", file.Name(), ", isdir = ", file.IsDir())
 	}
 
 	a.mux.Lock()
