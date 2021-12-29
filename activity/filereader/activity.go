@@ -8,7 +8,6 @@ package filereader
 import (
 	"fmt"
 	"io/ioutil"
-	"os"
 	"path/filepath"
 	"sync"
 
