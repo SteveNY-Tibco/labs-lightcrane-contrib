@@ -91,8 +91,8 @@ func (a *ModelParameterBuilderActivity) Metadata() *activity.Metadata {
 
 func (a *ModelParameterBuilderActivity) Eval(context activity.Context) (done bool, err error) {
 
-	log.Info("[ModelParameterBuilderActivity:Eval] entering ........ ")
-	defer log.Info("[ModelParameterBuilderActivity:Eval] Exit ........ ")
+	log.Debug("[ModelParameterBuilderActivity:Eval] entering ........ ")
+	defer log.Debug("[ModelParameterBuilderActivity:Eval] Exit ........ ")
 
 	gProperties, err := a.getProperties(context)
 	if err != nil {
@@ -103,13 +103,13 @@ func (a *ModelParameterBuilderActivity) Eval(context activity.Context) (done boo
 	if !ok {
 		return false, errors.New("Invalid Service Type ... ")
 	}
-	log.Info("[ModelParameterBuilderActivity:Eval]  Name : ", serviceType)
+	log.Debug("[ModelParameterBuilderActivity:Eval]  Name : ", serviceType)
 
 	flogoAppDescriptor, ok := context.GetInput(iFlogoAppDescriptor).(map[string]interface{})
 	if !ok {
 		return false, errors.New("Invalid Flogo Application Descriptor ... ")
 	}
-	log.Info("[ModelParameterBuilderActivity:Eval]  Flogo Application Descriptor : ", flogoAppDescriptor)
+	log.Debug("[ModelParameterBuilderActivity:Eval]  Flogo Application Descriptor : ", flogoAppDescriptor)
 
 	/*********************************
 	        Construct Pipeline
@@ -119,13 +119,11 @@ func (a *ModelParameterBuilderActivity) Eval(context activity.Context) (done boo
 	var appProperties []interface{}
 	var extraArray []interface{}
 
-	log.Info("[ModelParameterBuilderActivity:Eval] entering ........ 1")
 	/* If any server port defined */
 	if nil != flogoAppDescriptor[iPorts] {
 		ports = flogoAppDescriptor[iPorts].([]interface{})
 	}
 
-	log.Info("[ModelParameterBuilderActivity:Eval] entering ........ 2")
 	/* Extrace Daynamic Parameter From DataSource */
 	if nil != flogoAppDescriptor[iProperties] {
 		appProperties = flogoAppDescriptor[iProperties].([]interface{})
@@ -133,7 +131,6 @@ func (a *ModelParameterBuilderActivity) Eval(context activity.Context) (done boo
 		appProperties = make([]interface{}, 0)
 	}
 
-	log.Info("[ModelParameterBuilderActivity:Eval] entering ........ 3")
 	if nil != flogoAppDescriptor[iExtra] {
 		extraArray = flogoAppDescriptor[iExtra].([]interface{})
 		for _, property := range extraArray {
@@ -149,7 +146,6 @@ func (a *ModelParameterBuilderActivity) Eval(context activity.Context) (done boo
 	} else {
 		extraArray = make([]interface{}, 0)
 	}
-	log.Info("[ModelParameterBuilderActivity:Eval] entering ........ 4")
 
 	/*********************************
 	    Construct Dynamic Parameter
@@ -173,7 +169,7 @@ func (a *ModelParameterBuilderActivity) Eval(context activity.Context) (done boo
 	} else {
 		propertyPrefix = pathMapper.Replace(propertyPrefix, defVariable)
 	}
-	log.Info("[ModelParameterBuilderActivity:Eval]  Property Prefix : ", propertyPrefix)
+	log.Debug("[ModelParameterBuilderActivity:Eval]  Property Prefix : ", propertyPrefix)
 
 	var f1Properties interface{}
 	switch serviceType {
@@ -199,7 +195,7 @@ func (a *ModelParameterBuilderActivity) Eval(context activity.Context) (done boo
 
 	context.SetOutput(oF1Properties, f1Properties)
 	context.SetOutput(oPropertyNameDef, propertyNameDef)
-	log.Info("[PipelineBuilderActivity:Eval]PropertyNameDef = ", propertyNameDef)
+	log.Debug("[PipelineBuilderActivity:Eval]PropertyNameDef = ", propertyNameDef)
 
 	return true, nil
 }
@@ -226,11 +222,11 @@ func (a *ModelParameterBuilderActivity) createDockerF1Properties(
 		if nil != err {
 			return nil, err
 		}
-		log.Info("[createDockerF1Properties] Name = ", property["Name"], ", Raw Value = ", value, ", defVariable = ", defVariable)
+		log.Debug("[createDockerF1Properties] Name = ", property["Name"], ", Raw Value = ", value, ", defVariable = ", defVariable)
 
 		if "String" == dtype {
 			value = pathMapper.Replace(value.(string), defVariable)
-			log.Info("[createDockerF1Properties] Value after replace = ", value)
+			log.Debug("[createDockerF1Properties] Value after replace = ", value)
 			sValue := value.(string)
 			if "" != sValue && sValue[0] == '$' && sValue[len(sValue)-1] == '$' {
 				continue
@@ -435,7 +431,7 @@ func (a *ModelParameterBuilderActivity) getVariableMapper(ctx activity.Context) 
 		if nil == mapper {
 			variables = make(map[string]string)
 			variablesDef, ok := ctx.GetSetting(sVariablesDef)
-			log.Info("Processing handlers : variablesDef = ", variablesDef)
+			log.Debug("Processing handlers : variablesDef = ", variablesDef)
 			if ok && nil != variablesDef {
 				for _, variableDef := range variablesDef.([]interface{}) {
 					variableInfo := variableDef.(map[string]interface{})
