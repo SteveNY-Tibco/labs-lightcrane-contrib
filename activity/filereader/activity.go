@@ -51,6 +51,15 @@ func (a *FileReaderActivity) Eval(context activity.Context) (done bool, err erro
 	}
 	log.Info("(FileReaderActivity.Eval) Output base folder = ", baseFolder)
 
+	files, err := ioutil.ReadDir(baseFolder)
+	if err != nil {
+		log.Error(err)
+	}
+
+	for _, file := range files {
+		log.Info("(FileReaderActivity.Eval) Output filename = ", file.Name(), ", isdir = ", file.IsDir())
+	}
+
 	a.mux.Lock()
 	defer a.mux.Unlock()
 
