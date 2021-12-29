@@ -56,12 +56,12 @@ func (a *FileWriterActivity) Metadata() *activity.Metadata {
 }
 
 func (a *FileWriterActivity) Eval(context activity.Context) (done bool, err error) {
-	log.Debug("(FileWriterActivity.Eval) Graph to file entering ......... ")
-	defer log.Debug("(FileWriterActivity.Eval) write object to file exit ......... ")
+	log.Info("(FileWriterActivity.Eval) Graph to file entering ......... ")
+	defer log.Info("(FileWriterActivity.Eval) write object to file exit ......... ")
 
 	skipCondition := context.GetInput(iSkipCondition).(bool)
 	if skipCondition {
-		log.Debug("(Eval) Skip taks : ", skipCondition)
+		log.Info("(Eval) Skip taks : ", skipCondition)
 		context.SetOutput(oFilename, nil)
 		return true, nil
 	}
@@ -87,14 +87,15 @@ func (a *FileWriterActivity) Eval(context activity.Context) (done bool, err erro
 	a.mux.Lock()
 	defer a.mux.Unlock()
 
-	err = a.prepareFile(outputFile)
-	if err != nil {
-		panic(err)
-		return false, nil
-	}
+	//	err = a.prepareFile(outputFile)
+	//	if err != nil {
+	//		panic(err)
+	//		return false, nil
+	//	}
 
-	log.Debug("(Eval) File name : ", outputFile)
-	f, err := os.OpenFile(outputFile, os.O_APPEND|os.O_WRONLY, 0600)
+	log.Info("(Eval) File name : ", outputFile)
+	//	f, err := os.OpenFile(outputFile, os.O_APPEND|os.O_WRONLY, 0600)
+	f, err := os.OpenFile(outputFile, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
 	if err != nil {
 		panic(err)
 		return false, nil
@@ -104,14 +105,14 @@ func (a *FileWriterActivity) Eval(context activity.Context) (done bool, err erro
 
 	f.WriteString(dataString)
 
-	log.Debug("(Eval) list files in : ", filepath.Dir(outputFile))
+	log.Info("(Eval) list files in : ", filepath.Dir(outputFile))
 	files, err := ioutil.ReadDir(filepath.Dir(outputFile))
 	if err != nil {
 		log.Error(err)
 	}
 
 	for _, f := range files {
-		log.Debug("(Eval) file : ", f.Name())
+		log.Info("(Eval) file : ", f.Name())
 	}
 
 	context.SetOutput(oFilename, outputFile)
