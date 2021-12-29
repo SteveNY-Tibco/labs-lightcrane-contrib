@@ -52,18 +52,6 @@ func (a *FileReaderActivity) Eval(context activity.Context) (done bool, err erro
 	}
 	log.Info("(FileReaderActivity.Eval) Output base folder = ", baseFolder)
 
-	err = filepath.Walk(baseFolder, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			log.Error(err)
-			return err
-		}
-		log.Info("dir: %v: name: %s\n", info.IsDir(), path)
-		return nil
-	})
-	if err != nil {
-		log.Error(err)
-	}
-
 	a.mux.Lock()
 	defer a.mux.Unlock()
 
