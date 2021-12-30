@@ -81,7 +81,7 @@ func (a *FileWriterActivity) Eval(context activity.Context) (done bool, err erro
 		outputFile = pathMapper.Replace("", pathVariable.(map[string]interface{}))
 	}
 
-	if strings.HasSuffix(strings.ToLower(outputFile), ".zip.base64") {
+	if strings.HasSuffix(strings.ToLower(outputFile), ".zip.base64") || strings.HasSuffix(strings.ToLower(outputFile), ".zip") {
 		a.handelZipFile(outputFile, data)
 	} else {
 		a.handelFile(outputFile, data, inputType)
