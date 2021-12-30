@@ -133,12 +133,12 @@ func (a *FileWriterActivity) getPathMapper(ctx activity.Context) (*kwr.KeywordMa
 	return mapper, variables, nil
 }
 
-func (a *FileWriterActivity) handelFile(outputFile string, data interface{}, inputType interface{}) error {
+func (a *FileWriterActivity) handelFile(outputFile string, dataEnvelop interface{}, inputType interface{}) error {
 	var dataString string
 	if "String" == inputType {
-		dataString = data.(map[string]interface{})[iInput].(string)
+		dataString = dataEnvelop.(map[string]interface{})[iInput].(string)
 	} else {
-		jsonString, _ := json.Marshal(data)
+		jsonString, _ := json.Marshal(dataEnvelop)
 		dataString = string(jsonString) + "\r\n"
 	}
 
@@ -165,9 +165,9 @@ func (a *FileWriterActivity) handelFile(outputFile string, data interface{}, inp
 	return nil
 }
 
-func (a *FileWriterActivity) handelZipFile(fullFilename string, b64data interface{}) error {
-
-	data, err := b64.StdEncoding.DecodeString(string(b64data.(string)))
+func (a *FileWriterActivity) handelZipFile(fullFilename string, dataEnvelop interface{}) error {
+	b64data := dataEnvelop.(map[string]interface{})[iInput].(string)
+	data, err := b64.StdEncoding.DecodeString(string(b64data))
 
 	zipReader, err := zip.NewReader(bytes.NewReader(data), int64(len(data)))
 	if err != nil {
