@@ -154,10 +154,10 @@ func (a *ExecActivity) Eval(context activity.Context) (done bool, err error) {
 	}
 	data := make(map[string]interface{})
 	if iAsynchronous {
-		log.Debug("(ExecActivity.Eval) execCommand asynchronously!")
+		log.Info("(ExecActivity.Eval) execCommand asynchronously!")
 		go a.execCommand(commands, newEnv, workingFolder, execContext, eventListener)
 	} else {
-		log.Debug("(ExecActivity.Eval) execCommand synchronously!")
+		log.Info("(ExecActivity.Eval) execCommand synchronously!")
 		data, err = a.execCommand(commands, newEnv, workingFolder, execContext, eventListener)
 	}
 
