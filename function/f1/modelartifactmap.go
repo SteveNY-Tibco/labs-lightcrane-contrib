@@ -34,7 +34,7 @@ func (fnModelArtifactMap) Eval(params ...interface{}) (interface{}, error) {
 		if "folder" == dtype && false == strings.HasSuffix(strings.ToLower(name), ".zip") {
 			folderMap = append(folderMap, map[string]interface{}{
 				"Name":  fmt.Sprintf("services.$Name$.volumes[%d]", index),
-				"Value": fmt.Sprintf("%s:%s", name, value),
+				"Value": fmt.Sprintf("%s:%s", value, name),
 				"Type":  "String",
 			})
 			index = index + 1
