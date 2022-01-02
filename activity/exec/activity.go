@@ -77,12 +77,12 @@ func (a *ExecActivity) Metadata() *activity.Metadata {
 
 func (a *ExecActivity) Eval(context activity.Context) (done bool, err error) {
 
-	log.Debug("[ExecActivity.Eval] entering ........ ")
-	defer log.Debug("[ExecActivity.Eval] Exit ........ ")
+	log.Info("[ExecActivity.Eval] entering ........ ")
+	defer log.Info("[ExecActivity.Eval] Exit ........ ")
 
 	skipCondition := context.GetInput(iSkipCondition).(bool)
 	if skipCondition {
-		log.Debug("(ExecActivity.Eval) Skip taks : ", skipCondition)
+		log.Info("(ExecActivity.Eval) Skip taks : ", skipCondition)
 		return true, nil
 	}
 
@@ -93,7 +93,7 @@ func (a *ExecActivity) Eval(context activity.Context) (done bool, err error) {
 
 	sysEnv, err := a.getSysEnvs(context)
 	if nil != err {
-		log.Debug("(ExecActivity.Eval) Unable to load sysEnv : ", err.Error())
+		log.Info("(ExecActivity.Eval) Unable to load sysEnv : ", err.Error())
 		sysEnv = make(map[string]string)
 	}
 
@@ -125,7 +125,7 @@ func (a *ExecActivity) Eval(context activity.Context) (done bool, err error) {
 	for i := 0; i < numOfExecutions.(int); i++ {
 		if nil != variable {
 			command := pathMapper.Replace(executions[fmt.Sprintf("%s_%d", iExecution, i)].(string), variable)
-			log.Debug("(ExecActivity.Eval) command : ", command)
+			log.Info("(ExecActivity.Eval) command : ", command)
 			commands = append(commands, strings.Split(command, " "))
 		}
 	}
@@ -142,9 +142,9 @@ func (a *ExecActivity) Eval(context activity.Context) (done bool, err error) {
 	for key, value := range sysEnv {
 		newEnv = append(newEnv, fmt.Sprintf("%s=%s", key, value))
 	}
-	log.Debug("[ExecActivity.Eval] newEnv : ", newEnv)
+	log.Info("[ExecActivity.Eval] newEnv : ", newEnv)
 
-	log.Debug("(ExecActivity.Eval) iAsynchronous : ", iAsynchronous)
+	log.Info("(ExecActivity.Eval) iAsynchronous : ", iAsynchronous)
 	eventListener, _ := a.getExecEventBroker(context)
 	execContext := map[string]interface{}{
 		"Variable":          variable,
@@ -182,17 +182,17 @@ func (a *ExecActivity) execCommand(
 	workingFolder interface{},
 	execContext map[string]interface{},
 	listener *execeventbroker.EXEEventBroker) (map[string]interface{}, error) {
-	log.Debug("[ExecActivity.execCommand] entering - execContext : ", execContext)
+	log.Info("[ExecActivity.execCommand] entering - execContext : ", execContext)
 	var err error
 	errorMsgs := make([]interface{}, 0)
 	data := make(map[string]interface{})
 	data["Result"] = make([]interface{}, 0)
 
 	for i := 0; i < len(commands); i++ {
-		log.Debug("[ExecActivity.execCommand] command : ", commands)
+		log.Info("[ExecActivity.execCommand] command : ", commands)
 		cmd := exec.Command(commands[i][0], commands[i][1:]...)
 		if nil != workingFolder {
-			log.Debug("[ExecActivity.execCommand] Working folder : ", workingFolder.(string))
+			log.Info("[ExecActivity.execCommand] Working folder : ", workingFolder.(string))
 			cmd.Dir = workingFolder.(string)
 			_, err := os.Stat(workingFolder.(string))
 			if err != nil {
@@ -208,7 +208,7 @@ func (a *ExecActivity) execCommand(
 
 		cmd.Env = newEnv
 		for _, env := range cmd.Env {
-			log.Debug("[ExecActivity.execCommand] ", env)
+			log.Info("[ExecActivity.execCommand] ", env)
 		}
 
 		var stdoutBuf, stderrBuf bytes.Buffer
@@ -227,13 +227,13 @@ func (a *ExecActivity) execCommand(
 			"StdErr":  string(stderrBuf.Bytes()),
 		})
 	}
-	log.Debug("[ExecActivity.execCommand] return - data : ", data)
+	log.Info("[ExecActivity.execCommand] return - data : ", data)
 	if nil != listener {
 		if nil != err {
 			execContext["Successful"] = false
 			execContext["ErrorMsg"] = errorMsgs
 		}
-		log.Debug("[ExecActivity.execCommand] send event - execContext : ", execContext)
+		log.Info("[ExecActivity.execCommand] send event - execContext : ", execContext)
 		listener.SendEvent(execContext)
 	}
 	return data, err
@@ -248,10 +248,10 @@ func (a *ExecActivity) getSysEnvs(ctx activity.Context) (map[string]string, erro
 		defer a.mux.Unlock()
 		sysEnvs = a.sysEnvs[myId]
 		if nil == sysEnvs {
-			log.Debug("[ExecActivity.getSysEnvs] activity.Context = ", ctx)
+			log.Info("[ExecActivity.getSysEnvs] activity.Context = ", ctx)
 			sysEnvs = make(map[string]string)
 			sysEnvsDef, _ := ctx.GetSetting(sSystemEnv)
-			log.Debug("[ExecActivity.getSysEnvs] sysEnvsDef = ", sysEnvsDef)
+			log.Info("[ExecActivity.getSysEnvs] sysEnvsDef = ", sysEnvsDef)
 			if nil != sysEnvsDef {
 				for _, sysEnvDef := range sysEnvsDef.([]interface{}) {
 					sysEnvInfo := sysEnvDef.(map[string]interface{})
@@ -260,7 +260,7 @@ func (a *ExecActivity) getSysEnvs(ctx activity.Context) (map[string]string, erro
 					}
 				}
 			}
-			log.Debug("[ExecActivity.getSysEnvs] sysEnvs = ", sysEnvs)
+			log.Info("[ExecActivity.getSysEnvs] sysEnvs = ", sysEnvs)
 
 			a.sysEnvs[myId] = sysEnvs
 		}
@@ -280,7 +280,7 @@ func (a *ExecActivity) getVariableMapper(ctx activity.Context) (*kwr.KeywordMapp
 		if nil == mapper {
 			variables = make(map[string]string)
 			variablesDef, _ := ctx.GetSetting(sVariablesDef)
-			log.Debug("ExecActivity.Processing handlers : variablesDef = ", variablesDef)
+			log.Info("ExecActivity.Processing handlers : variablesDef = ", variablesDef)
 			for _, variableDef := range variablesDef.([]interface{}) {
 				variableInfo := variableDef.(map[string]interface{})
 				variables[variableInfo["Name"].(string)] = variableInfo["Type"].(string)
@@ -308,7 +308,7 @@ func (a *ExecActivity) getExecEventBroker(context activity.Context) (*execeventb
 
 	exeEventBroker := execeventbroker.GetFactory().GetEXEEventBroker(a.activityToConnector[myId])
 	if nil == exeEventBroker {
-		log.Debug("Look up ececution event broker start ...")
+		log.Info("Look up ececution event broker start ...")
 		connection, exist := context.GetSetting(cConnection)
 		if !exist {
 			log.Warn("Execution event broker not configured! ")
@@ -337,7 +337,7 @@ func (a *ExecActivity) getExecEventBroker(context activity.Context) (*execeventb
 			}
 			a.activityToConnector[myId] = connectorName
 		}
-		log.Debug("Look up SSE data broker end ...")
+		log.Info("Look up SSE data broker end ...")
 	}
 
 	return exeEventBroker, nil
