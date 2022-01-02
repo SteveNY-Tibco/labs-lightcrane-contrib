@@ -145,7 +145,11 @@ func (a *ExecActivity) Eval(context activity.Context) (done bool, err error) {
 	log.Info("[ExecActivity.Eval] newEnv : ", newEnv)
 
 	log.Info("(ExecActivity.Eval) iAsynchronous : ", iAsynchronous)
-	eventListener, _ := a.getExecEventBroker(context)
+	eventListener, err := a.getExecEventBroker(context)
+	if nil != err {
+		log.Warn("Unable to find event listener : ", err.Error())
+	}
+
 	execContext := map[string]interface{}{
 		"Variable":          variable,
 		"SystemEnvironment": dynSysEnvs,
@@ -309,6 +313,7 @@ func (a *ExecActivity) getExecEventBroker(context activity.Context) (*execeventb
 	exeEventBroker := execeventbroker.GetFactory().GetEXEEventBroker(a.activityToConnector[myId])
 	if nil == exeEventBroker {
 		log.Info("Look up ececution event broker start ...")
+		defer log.Info("Look up ececution event broker end ...")
 		connection, exist := context.GetSetting(cConnection)
 		if !exist {
 			log.Warn("Execution event broker not configured! ")
@@ -337,7 +342,6 @@ func (a *ExecActivity) getExecEventBroker(context activity.Context) (*execeventb
 			}
 			a.activityToConnector[myId] = connectorName
 		}
-		log.Info("Look up SSE data broker end ...")
 	}
 
 	return exeEventBroker, nil
