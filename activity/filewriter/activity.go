@@ -169,6 +169,7 @@ func (a *FileWriterActivity) handelFile(outputFile string, dataEnvelop interface
 
 func (a *FileWriterActivity) handelZipFile(fullFilename string, dataEnvelop interface{}) error {
 	log.Info("(FileWriterActivity.handelZipFile) File name : ", fullFilename)
+	log.Info("(FileWriterActivity.handelZipFile) dataEnvelop : ", dataEnvelop)
 
 	b64data := dataEnvelop.(map[string]interface{})[iInput].(string)
 	data, err := b64.StdEncoding.DecodeString(string(b64data))
