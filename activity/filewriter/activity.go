@@ -181,15 +181,15 @@ func (a *FileWriterActivity) handelZipFile(fullFilename string, dataEnvelop inte
 
 	folder := filepath.Dir(fullFilename)
 	for _, f := range zipReader.File {
-		fmt.Println("processing file ", f.Name)
+		fmt.Println("(FileWriterActivity.handelZipFile) processing file ", f.Name)
 		filePath := filepath.Join(folder, f.Name)
 		if f.FileInfo().IsDir() {
-			fmt.Println("creating directory...")
+			fmt.Println("(FileWriterActivity.handelZipFile) creating directory...")
 			os.MkdirAll(filePath, os.ModePerm)
 			continue
 		}
 
-		fmt.Println("unzipping file ", filePath)
+		fmt.Println("(FileWriterActivity.handelZipFile) unzipping file ", filePath)
 		if err := os.MkdirAll(filepath.Dir(filePath), os.ModePerm); err != nil {
 			panic(err)
 		}
