@@ -61,7 +61,7 @@ func (a *FileWriterActivity) Metadata() *activity.Metadata {
 }
 
 func (a *FileWriterActivity) Eval(context activity.Context) (done bool, err error) {
-	log.Info("(FileWriterActivity.Eval) Graph to file entering ......... ")
+	log.Info("(FileWriterActivity.Eval) write object to file entering ......... ")
 	defer log.Info("(FileWriterActivity.Eval) write object to file exit ......... ")
 
 	skipCondition := context.GetInput(iSkipCondition).(bool)
@@ -81,6 +81,7 @@ func (a *FileWriterActivity) Eval(context activity.Context) (done bool, err erro
 		outputFile = pathMapper.Replace("", pathVariable.(map[string]interface{}))
 	}
 
+	log.Info("(FileWriterActivity.Eval) outputFile : ", outputFile)
 	if strings.HasSuffix(strings.ToLower(outputFile), ".zip.base64") || strings.HasSuffix(strings.ToLower(outputFile), ".zip") {
 		a.handelZipFile(outputFile, data)
 	} else {
@@ -134,6 +135,8 @@ func (a *FileWriterActivity) getPathMapper(ctx activity.Context) (*kwr.KeywordMa
 }
 
 func (a *FileWriterActivity) handelFile(outputFile string, dataEnvelop interface{}, inputType interface{}) error {
+	log.Info("(FileWriterActivity.handelFile) File name : ", outputFile)
+
 	var dataString string
 	if "String" == inputType {
 		dataString = dataEnvelop.(map[string]interface{})[iInput].(string)
@@ -152,7 +155,6 @@ func (a *FileWriterActivity) handelFile(outputFile string, dataEnvelop interface
 	a.mux.Lock()
 	defer a.mux.Unlock()
 
-	log.Info("(Eval) File name : ", outputFile)
 	f, err := os.OpenFile(outputFile, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
 	if err != nil {
 		panic(err)
@@ -166,6 +168,8 @@ func (a *FileWriterActivity) handelFile(outputFile string, dataEnvelop interface
 }
 
 func (a *FileWriterActivity) handelZipFile(fullFilename string, dataEnvelop interface{}) error {
+	log.Info("(FileWriterActivity.handelZipFile) File name : ", fullFilename)
+
 	b64data := dataEnvelop.(map[string]interface{})[iInput].(string)
 	data, err := b64.StdEncoding.DecodeString(string(b64data))
 
