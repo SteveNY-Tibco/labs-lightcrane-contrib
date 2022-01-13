@@ -205,13 +205,20 @@ func (a *ModelParameterBuilderActivity) populateDefaultPort(ports []interface{},
 	}
 	port := ""
 	extPort := ""
+	endpointPort := ""
 	for _, property := range properties {
 		propertyName := property.(map[string]interface{})["Name"].(string)
 		if "System_Port" == propertyName {
 			port = property.(map[string]interface{})["Value"].(string)
 		} else if "System_Port_Ext" == propertyName {
 			extPort = property.(map[string]interface{})["Value"].(string)
+		} else if "System_ExternalEndpointPort" == propertyName {
+			endpointPort = property.(map[string]interface{})["Value"].(string)
 		}
+	}
+
+	if "" == extPort {
+		extPort = endpointPort
 	}
 
 	if "" == port || "" == extPort {
@@ -274,6 +281,9 @@ func (a *ModelParameterBuilderActivity) createDockerF1Properties(
 		})
 	}
 	index := 0
+
+	//	System_ExternalEndpointPort
+
 	for _, port := range ports {
 		mainDescription["Value"] = append(mainDescription["Value"].([]interface{}), map[string]interface{}{
 			"Name":  pathMapper.Replace(fmt.Sprintf("%s.ports[%d]", propertyPrefix, index), defVariable),
