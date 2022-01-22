@@ -82,6 +82,7 @@ func (a *FileWriterActivity) Eval(context activity.Context) (done bool, err erro
 	}
 
 	log.Info("(FileWriterActivity.Eval) outputFile : ", outputFile)
+	a.prepareFolder(outputFile)
 	if strings.HasSuffix(strings.ToLower(outputFile), ".zip.base64") || strings.HasSuffix(strings.ToLower(outputFile), ".zip") {
 		a.handelZipFile(outputFile, data)
 	} else {
@@ -106,7 +107,7 @@ func (a *FileWriterActivity) getPathMapper(ctx activity.Context) (*kwr.KeywordMa
 		if nil == mapper {
 			variables = make(map[string]string)
 			variablesDef, _ := ctx.GetSetting(sVariablesDef)
-			log.Debug("Processing handlers : variablesDef = ", variablesDef)
+			log.Info("Processing handlers : variablesDef = ", variablesDef)
 			for _, variableDef := range variablesDef.([]interface{}) {
 				variableInfo := variableDef.(map[string]interface{})
 				variables[variableInfo["Name"].(string)] = variableInfo["Type"].(string)
@@ -132,6 +133,28 @@ func (a *FileWriterActivity) getPathMapper(ctx activity.Context) (*kwr.KeywordMa
 		}
 	}
 	return mapper, variables, nil
+}
+
+func (a *FileWriterActivity) prepareFolder(outputFile string) error {
+	outputFolder := filepath.Dir(outputFile)
+
+	log.Info("Output file : ", outputFile)
+	log.Info("Output folder : ", outputFolder)
+
+	// Check if folder exists
+	_, err := os.Stat(outputFolder)
+	if err != nil {
+		if os.IsNotExist(err) {
+			err := os.MkdirAll(outputFolder, os.ModePerm)
+			if nil != err {
+				log.Error("Unable to create folder : ", err)
+				return err
+			}
+		}
+	}
+
+	log.Info("Initializing FileWriter Service end ...")
+	return nil
 }
 
 func (a *FileWriterActivity) handelFile(outputFile string, dataEnvelop interface{}, inputType interface{}) error {
