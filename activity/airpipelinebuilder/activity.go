@@ -164,7 +164,7 @@ func (a *PipelineBuilderActivity) Eval(context activity.Context) (done bool, err
 	appPropertiesByComponent = append(appPropertiesByComponent, appProperties)
 
 	/* Adding logics and find a runner*/
-	var runner string
+	var runner interface{}
 	for key, value := range applicationPipelineDescriptor {
 		switch key {
 		case "logic":
