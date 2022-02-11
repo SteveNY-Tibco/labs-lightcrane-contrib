@@ -405,6 +405,10 @@ func (this Logic) Get(key string) interface{} {
 	return make([]interface{}, 0)
 }
 
+func (this Logic) GetRunner() interface{} {
+	return this.data["runner"]
+}
+
 func (this Logic) GetResource() interface{} {
 	return this.data["resources"].([]interface{})[0]
 }

@@ -63,6 +63,7 @@ const (
 	oF1Properties                  = "F1Properties"
 	oDescriptor                    = "Descriptor"
 	oPropertyNameDef               = "PropertyNameDef"
+	oRunner                        = "Runner"
 )
 
 type PipelineBuilderActivity struct {
@@ -162,8 +163,8 @@ func (a *PipelineBuilderActivity) Eval(context activity.Context) (done bool, err
 	}
 	appPropertiesByComponent = append(appPropertiesByComponent, appProperties)
 
-	/* Adding logics */
-
+	/* Adding logics and find a runner*/
+	var runner string
 	for key, value := range applicationPipelineDescriptor {
 		switch key {
 		case "logic":
@@ -174,6 +175,9 @@ func (a *PipelineBuilderActivity) Eval(context activity.Context) (done bool, err
 				category := longname[:strings.Index(longname, ".")]
 				name := longname[strings.Index(longname, ".")+1:]
 				logic := templateLibrary.GetComponent(index, category, name).(model.Logic)
+				if nil != logic.GetRunner() {
+					runner = logic.GetRunner()
+				}
 				pipeline.AddLogic(logic)
 				if "Rule.Default" == longname || "Rule.Expression" == longname {
 					/* Add Notifier */
@@ -309,6 +313,7 @@ func (a *PipelineBuilderActivity) Eval(context activity.Context) (done bool, err
 
 	context.SetOutput(oDescriptor, descriptor)
 	context.SetOutput(oPropertyNameDef, propertyContainer.GetPropertyNameDef())
+	context.SetOutput(oRunner, runner)
 
 	return true, nil
 }
