@@ -310,6 +310,7 @@ func (a *PipelineBuilderActivity) Eval(context activity.Context) (done bool, err
 
 	log.Info("[PipelineBuilderActivity:Eval]  Descriptor : ", descriptor)
 	log.Info("[PipelineBuilderActivity:Eval]  PropertyNameDef : ", propertyContainer.GetPropertyNameDef())
+	log.Info("[PipelineBuilderActivity:Eval]  runner : ", runner)
 
 	context.SetOutput(oDescriptor, descriptor)
 	context.SetOutput(oPropertyNameDef, propertyContainer.GetPropertyNameDef())
