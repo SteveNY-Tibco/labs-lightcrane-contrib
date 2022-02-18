@@ -6,13 +6,11 @@
 package filewriter
 
 import (
-	//	"bytes"
 	"archive/zip"
 	"bytes"
 	b64 "encoding/base64"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -178,6 +176,7 @@ func (a *FileWriterActivity) handelFile(outputFile string, dataEnvelop interface
 	a.mux.Lock()
 	defer a.mux.Unlock()
 
+	log.Debug("(Eval) File name : ", outputFile)
 	f, err := os.OpenFile(outputFile, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
 	if err != nil {
 		panic(err)
@@ -204,15 +203,15 @@ func (a *FileWriterActivity) handelZipFile(fullFilename string, dataEnvelop inte
 
 	folder := filepath.Dir(fullFilename)
 	for _, f := range zipReader.File {
-		fmt.Println("(FileWriterActivity.handelZipFile) processing file ", f.Name)
+		log.Debug("processing file ", f.Name)
 		filePath := filepath.Join(folder, f.Name)
 		if f.FileInfo().IsDir() {
-			fmt.Println("(FileWriterActivity.handelZipFile) creating directory...")
+			log.Debug("creating directory...")
 			os.MkdirAll(filePath, os.ModePerm)
 			continue
 		}
 
-		fmt.Println("(FileWriterActivity.handelZipFile) unzipping file ", filePath)
+		log.Debug("unzipping file ", filePath)
 		if err := os.MkdirAll(filepath.Dir(filePath), os.ModePerm); err != nil {
 			panic(err)
 		}

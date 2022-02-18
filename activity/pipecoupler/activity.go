@@ -67,7 +67,7 @@ func (a *PipecouplerActivity) Eval(context activity.Context) (done bool, err err
 	if !ok {
 		log.Warn("No data comes in ... ")
 	}
-	log.Debug("[PipecouplerActivity:Eval] Input data: ", dataMap)
+	log.Info("[PipecouplerActivity:Eval] Input data: ", dataMap)
 
 	//var cancel ctx.CancelFunc
 	aContext, cancel := ctx.WithTimeout(ctx.Background(), 20*time.Second)

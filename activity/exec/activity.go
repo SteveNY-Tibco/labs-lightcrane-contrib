@@ -80,12 +80,6 @@ func (a *ExecActivity) Eval(context activity.Context) (done bool, err error) {
 	log.Info("[ExecActivity.Eval] entering ........ ")
 	defer log.Info("[ExecActivity.Eval] Exit ........ ")
 
-	skipCondition := context.GetInput(iSkipCondition).(bool)
-	if skipCondition {
-		log.Info("(ExecActivity.Eval) Skip taks : ", skipCondition)
-		return true, nil
-	}
-
 	iAsynchronous, ok := context.GetInput(iAsynchronous).(bool)
 	if !ok {
 		iAsynchronous = false
@@ -118,6 +112,30 @@ func (a *ExecActivity) Eval(context activity.Context) (done bool, err error) {
 			variable[key] = value
 		}
 	}
+
+	eventListener, _ := a.getExecEventBroker(context)
+	execContext := map[string]interface{}{
+		"Variable":          variable,
+		"SystemEnvironment": dynSysEnvs,
+		"Successful":        true,
+		"ErrorMsg":          "",
+	}
+
+	skipCondition := context.GetInput(iSkipCondition).(bool)
+	if skipCondition {
+		log.Debug("(ExecActivity.Eval) Skip taks : ", skipCondition)
+		success := true
+		message := "Command Skiped!"
+		context.SetOutput(oSuccess, success)
+		context.SetOutput(oMessage, message)
+		context.SetOutput(oErrorCode, 100)
+		context.SetOutput(oResult, make(map[string]interface{}))
+
+		log.Debug("[ExecActivity.skipCondition] send event - execContext : ", execContext)
+		eventListener.SendEvent(execContext)
+		return true, nil
+	}
+
 	executions := executable[iExecutions].(map[string]interface{})
 	numOfExecutions, _ := context.GetSetting(sNumOfExecutions)
 	pathMapper, _, _ := a.getVariableMapper(context)
@@ -312,8 +330,8 @@ func (a *ExecActivity) getExecEventBroker(context activity.Context) (*execeventb
 
 	exeEventBroker := execeventbroker.GetFactory().GetEXEEventBroker(a.activityToConnector[myId])
 	if nil == exeEventBroker {
-		log.Info("Look up ececution event broker start ...")
-		defer log.Info("Look up ececution event broker end ...")
+		log.Info("Look up execution event broker start ...")
+		defer log.Info("Look up execution event broker end ...")
 		connection, exist := context.GetSetting(cConnection)
 		if !exist {
 			log.Warn("Execution event broker not configured! ")
@@ -342,6 +360,7 @@ func (a *ExecActivity) getExecEventBroker(context activity.Context) (*execeventb
 			}
 			a.activityToConnector[myId] = connectorName
 		}
+		log.Debug("Look up SSE data broker end ...")
 	}
 
 	return exeEventBroker, nil

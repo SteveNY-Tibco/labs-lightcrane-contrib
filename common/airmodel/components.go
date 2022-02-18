@@ -84,11 +84,18 @@ func (this DataSource) BuildActivities(subflowID string) []interface{} {
 		if index == len(this.defaultActivities)-1 {
 			previousActivityId := this.defaultActivities[index-1].(map[string]interface{})["id"]
 			//log.Debug("$$$$$$$$$$$$$$$$$$$", previousActivityId)
-			if "NewFlowData" == previousActivityId {
-				_ = objectbuilder.SetObject(this.subflowActivity, "root.settings.iterate", "=$activity[NewFlowData].Data.readings")
-				_ = objectbuilder.SetObject(this.subflowActivity, "root.activity.input.gateway", "=$activity[NewFlowData].Data.gateway")
-				_ = objectbuilder.SetObject(this.subflowActivity, "root.activity.input.reading", "=$iteration[value]")
-				_ = objectbuilder.SetObject(this.subflowActivity, "root.activity.input.enriched", "=$activity[NewFlowData].Data.enriched")
+			if "Next_Flow" == previousActivityId {
+				subflowActivity := this.defaultActivities[index-1].(map[string]interface{})
+				_ = objectbuilder.SetObject(subflowActivity, "root.activity.settings.flowURI", fmt.Sprintf("res://flow:%s", subflowID))
+			} else {
+				if "NewFlowData" == previousActivityId {
+					_ = objectbuilder.SetObject(this.subflowActivity, "root.settings.iterate", "=$activity[NewFlowData].Data.readings")
+					_ = objectbuilder.SetObject(this.subflowActivity, "root.activity.input.gateway", "=$activity[NewFlowData].Data.gateway")
+					_ = objectbuilder.SetObject(this.subflowActivity, "root.activity.input.reading", "=$iteration[value]")
+					_ = objectbuilder.SetObject(this.subflowActivity, "root.activity.input.enriched", "=$activity[NewFlowData].Data.enriched")
+				}
+				_ = objectbuilder.SetObject(this.subflowActivity, "root.activity.settings.flowURI", fmt.Sprintf("res://flow:%s", subflowID))
+				activities = append(activities, this.subflowActivity)
 			}
 			_ = objectbuilder.SetObject(this.subflowActivity, "root.activity.settings.flowURI", fmt.Sprintf("res://flow:%s", subflowID))
 			activities = append(activities, this.subflowActivity)
@@ -398,15 +405,15 @@ func (this Logic) Clone(sn int, name string) PipelineComponent {
 	}
 }
 
+func (this Logic) GetRunner() interface{} {
+	return this.data["runner"]
+}
+
 func (this Logic) Get(key string) interface{} {
 	if nil != this.data[key] {
 		return this.data[key]
 	}
 	return make([]interface{}, 0)
-}
-
-func (this Logic) GetRunner() interface{} {
-	return this.data["runner"]
 }
 
 func (this Logic) GetResource() interface{} {
