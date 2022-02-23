@@ -41,7 +41,7 @@ type DataSource struct {
 }
 
 func (this DataSource) addNamespace4Properties(ID string) {
-	log.Debug(">>>>>>>>>> Data source >>>>>>>>>>>>> Data = ", this.data)
+	log.Info("(DataSource.addNamespace4Properties) >>>>>>>>>> Data source >>>>>>>>>>>>> Data = ", this.data)
 	handler := ObjectStringValueReplaceHandler{
 		ID: fmt.Sprintf("%s_", ID),
 	}
@@ -66,7 +66,7 @@ func (this DataSource) Build(subflowID string) {
 			})
 		}
 	}
-	log.Debug(">>>>>>>>>> links >>>>>>>>>>>>> links = ", links)
+	log.Info("(DataSource.Build) >>>>>>>>>> links >>>>>>>>>>>>> links = ", links)
 	_ = objectbuilder.SetObject(
 		this.data, "root.resources[0].data.tasks[0].activity.input.message",
 		fmt.Sprintf("=string.concat(\"########## DataSource ##########\", coerce.toString($flow.data))"))
@@ -78,12 +78,12 @@ func (this DataSource) Build(subflowID string) {
 }
 
 func (this DataSource) BuildActivities(subflowID string) []interface{} {
-	//log.Debug("$$$$$$$$$$", this.name)
+	log.Info("(DataSource.BuildActivities) $$$$$$$$$$", this.name)
 	activities := make([]interface{}, 0)
 	for index, activity := range this.defaultActivities {
 		if index == len(this.defaultActivities)-1 {
 			previousActivityId := this.defaultActivities[index-1].(map[string]interface{})["id"]
-			//log.Debug("$$$$$$$$$$$$$$$$$$$", previousActivityId)
+			log.Info("(DataSource.BuildActivities) $$$$$$$$$$$$$$$$$$$", previousActivityId)
 			if "Next_Flow" == previousActivityId {
 				subflowActivity := this.defaultActivities[index-1].(map[string]interface{})
 				_ = objectbuilder.SetObject(subflowActivity, "root.activity.settings.flowURI", fmt.Sprintf("res://flow:%s", subflowID))
@@ -180,7 +180,7 @@ type Notifier struct {
 }
 
 func (this Notifier) addNamespace4Properties(ID string) {
-	log.Debug(">>>>>>>>>> Notifier >>>>>>>>>>>>> Data = ", this.data)
+	log.Info("(Notifier.addNamespace4Properties) >>>>>>>>>> Notifier >>>>>>>>>>>>> Data = ", this.data)
 }
 
 func (this Notifier) Build(subflowID string) {
@@ -217,8 +217,8 @@ func (this Notifier) Get(key string) interface{} {
 }
 
 func (this Notifier) GetTriggers(notifierID string, listeners map[string]interface{}) []interface{} {
-	log.Debug("(Notifier.GetTriggers) ========== notifierID ->", notifierID)
-	log.Debug("(Notifier.GetTriggers) ========== listeners ->", listeners)
+	log.Info("(Notifier.GetTriggers) ========== notifierID ->", notifierID)
+	log.Info("(Notifier.GetTriggers) ========== listeners ->", listeners)
 	triggers := util.DeepCopy(this.data["triggers"]).([]interface{})
 	for _, trigger := range triggers {
 		if nil != listeners[notifierID] {
@@ -260,7 +260,7 @@ func (this Notifier) GetConnections() interface{} {
 /* Logic Class */
 
 func NewLogic(category string, filename string, subflowActivity map[string]interface{}) (Logic, error) {
-	//log.Debug(">>>>>>>>>> Logics >>>>>>>>>>>>> category = ", category, ", filename = ", filename)
+	log.Info("(NewLogic) >>>>>>>>>> Logics >>>>>>>>>>>>> category = ", category, ", filename = ", filename)
 	data, err := FromFile(filename)
 	iDefaultActivities := objectbuilder.LocateObject(data, "root.resources[0].data.tasks[]")
 	var defaultActivities []interface{}
@@ -271,12 +271,12 @@ func NewLogic(category string, filename string, subflowActivity map[string]inter
 	/////////////////////////////////////////////////////////////////////////
 	subflowActivities := make(map[string]interface{})
 	subflowPosDef := objectbuilder.LocateObject(data, "root.resources[0].data.description")
-	//log.Debug(">>>>>>>>>> Logics >>>>>>>>>>>>> subflowPosDef = ", subflowPosDef)
+	log.Info("(NewLogic) >>>>>>>>>> Logics >>>>>>>>>>>>> subflowPosDef = ", subflowPosDef)
 	if nil != subflowPosDef && "" != subflowPosDef {
 		subflowPosStrArray := strings.Split(subflowPosDef.(string), "|")
-		//log.Debug(">>>>>>>>>> Logics >>>>>>>>>>>>> subflowPosStrArray = ", subflowPosStrArray)
+		log.Info("(NewLogic) >>>>>>>>>> Logics >>>>>>>>>>>>> subflowPosStrArray = ", subflowPosStrArray)
 		for _, posStr := range subflowPosStrArray {
-			//log.Debug(">>>>>>>>>> Logics >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> posStr = ", posStr)
+			log.Info("(NewLogic) >>>>>>>>>> Logics >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> posStr = ", posStr)
 			_, err := strconv.Atoi(posStr)
 			if nil != err {
 				return Logic{}, err
@@ -289,7 +289,7 @@ func NewLogic(category string, filename string, subflowActivity map[string]inter
 	} else {
 		subflowActivities[strconv.Itoa(len(defaultActivities)-1)] = util.DeepCopy(subflowActivity).(map[string]interface{})
 	}
-	//log.Debug(">>>>>>>>>> Logics >>>>>>>>>>>>> subflowActivities = ", subflowActivities)
+	log.Info("(NewLogic) >>>>>>>>>> Logics >>>>>>>>>>>>> subflowActivities = ", subflowActivities)
 	/////////////////////////////////////////////////////////////////////
 
 	return Logic{
@@ -321,7 +321,7 @@ func (this Logic) GetCategory() string {
 }
 
 func (this Logic) addNamespace4Properties(ID string) {
-	//log.Debug(">>>>>>>>>> Logics >>>>>>>>>>>>> Data = ", this.data)
+	log.Info("(Logic.addNamespace4Properties) >>>>>>>>>> Logics >>>>>>>>>>>>> Data = ", this.data)
 	handler := ObjectStringValueReplaceHandler{
 		ID: fmt.Sprintf("%s_", ID),
 	}
@@ -329,19 +329,19 @@ func (this Logic) addNamespace4Properties(ID string) {
 }
 
 func (this Logic) Build(subflowID string, last bool) {
-	//log.Debug("$$$$$$$$$$ name = ", this.name, ", subflow = ", subflowID, ", last = ", last)
+	log.Info("(Logic.Build) $$$$$$$$$$ name = ", this.name, ", subflow = ", subflowID, ", last = ", last)
 	var activities []interface{}
 	if !last {
 		activities = make([]interface{}, len(this.defaultActivities)+len(this.subflowActivities))
 		index := 0
 		for _, activity := range this.defaultActivities {
 			subflowActivities := this.subflowActivities[strconv.Itoa(index)]
-			//log.Debug("$$$$$$$$$$$$$$$$$$$ index = ", index, ", subflowActivities = ", subflowActivities)
+			log.Info("(Logic.Build) $$$$$$$$$$$$$$$$$$$ index = ", index, ", subflowActivities = ", subflowActivities)
 			if nil != subflowActivities {
 				activities[index] = subflowActivities
 				if 0 < index {
 					previousActivityId := this.defaultActivities[index-1].(map[string]interface{})["id"].(string)
-					//log.Debug("$$$$$$$$$$$$$$$$$$$", previousActivityId)
+					log.Info("(Logic.Build) $$$$$$$$$$$$$$$$$$$", previousActivityId)
 					if strings.HasPrefix(previousActivityId, "DataEmbedder") {
 						_ = objectbuilder.SetObject(subflowActivities.(map[string]interface{}), "root.activity.input.enriched", "=$activity[DataEmbedder].OutputDataCollection")
 					} else if strings.HasPrefix(previousActivityId, "NewFlowData") {
@@ -361,12 +361,12 @@ func (this Logic) Build(subflowID string, last bool) {
 		activities = this.defaultActivities
 	}
 
-	//log.Debug("$$$$$$$$$$$$$$$$$$$ this.data02 = ", this.data["resources"].([]interface{})[0].(map[string]interface{})["data"])
+	log.Info("(Logic.Build) $$$$$$$$$$$$$$$$$$$ this.data02 = ", this.data["resources"].([]interface{})[0].(map[string]interface{})["data"])
 	links := objectbuilder.LocateObject(this.data, "root.resources[0].data.links[]").([]interface{})
 	if 0 == len(links) {
 		links := make([]interface{}, len(activities)-1)
 		for index, _ := range activities {
-			//log.Debug(activities[index])
+			log.Info("(Logic.Build) ", activities[index])
 			if 0 != index {
 				links[index-1] = map[string]interface{}{
 					"id":   index,
@@ -441,7 +441,7 @@ func (this Logic) GetConnections() interface{} {
 }
 
 func FromFile(filename string) (map[string]interface{}, error) {
-	//log.Debug(":::::::::", filename)
+	log.Info("(FromFile) :::::::::", filename)
 	fileContent, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
@@ -454,7 +454,7 @@ func FromFile(filename string) (map[string]interface{}, error) {
 		return nil, err
 	}
 
-	//log.Debug("[BasePipelineComponent:buildFromFile] FlogoTemplate : filename = ", filename, ", template = ", result)
+	log.Info("(FromFile) FlogoTemplate : filename = ", filename, ", template = ", result)
 	return result, nil
 }
 
@@ -467,10 +467,10 @@ type ObjectStringValueReplaceHandler struct {
 
 func (this ObjectStringValueReplaceHandler) HandleElements(namespace objectbuilder.ElementId, element interface{}, dataType interface{}) interface{} {
 	if "string" == dataType {
-		log.Debug("(ObjectStringValueReplaceHandler HandleElements) Handle : element = ", element, ", type = ", dataType)
+		log.Info("(ObjectStringValueReplaceHandler.HandleElements) Handle : element = ", element, ", type = ", dataType)
 		replacement := kwr.Replace(element.(string), "${{", "}}$", "ID", this.ID)
 		if replacement != element {
-			log.Debug("(ObjectStringValueReplaceHandler HandleElements) Handle : element = ", element, ", type = ", dataType, ", replacement = ", replacement)
+			log.Info("(ObjectStringValueReplaceHandler.HandleElements) Handle : element = ", element, ", type = ", dataType, ", replacement = ", replacement)
 			return replacement
 		}
 	}

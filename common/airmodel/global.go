@@ -37,7 +37,7 @@ func (this *Contributes) Add(contributes interface{}) {
 }
 
 func (this *Contributes) AddContributes(encodedContributeString string) {
-	//log.Debug("encodedContributeString : " + encodedContributeString)
+	log.Info("(Contributes.AddContributes) encodedContributeString : " + encodedContributeString)
 	contributeString, _ := b64.URLEncoding.DecodeString(encodedContributeString)
 	var contributes interface{}
 	if err := json.Unmarshal([]byte(contributeString), &contributes); err != nil {
@@ -136,17 +136,17 @@ func (this *Properties) GetPropertyNameDef() map[string]interface{} {
 }
 
 func (this *Properties) GetReplacements(appPropertiesByComponent []interface{}) []interface{} {
-	log.Debug("(Properties.GetReplacements) appPropertiesByComponent : ", appPropertiesByComponent)
+	log.Info("(Properties.GetReplacements) appPropertiesByComponent : ", appPropertiesByComponent)
 	appProperties := make([]interface{}, 0)
 	/* loop for component in processing order */
 	for index, componentProperties := range appPropertiesByComponent {
-		log.Debug("(Properties.GetReplacements) index : ", index)
+		log.Info("(Properties.GetReplacements) index : ", index)
 		for _, property := range componentProperties.([]interface{}) {
 			name := property.(map[string]interface{})["Name"].(string)
-			log.Debug("app property name: ", name)
+			log.Info("(Properties.GetReplacements) app property name: ", name)
 			if nil != this.propertyMamingMap[index].(map[string]interface{})[name] {
 				name = this.propertyMamingMap[index].(map[string]interface{})[name].(string)
-				log.Debug("app property name after: ", name)
+				log.Info("(Properties.GetReplacements) app property name after: ", name)
 				property.(map[string]interface{})["Name"] = this.propertyMamingMap[index].(map[string]interface{})[property.(map[string]interface{})["Name"].(string)]
 				appProperties = append(appProperties, property)
 			}

@@ -34,7 +34,7 @@ func (this *FlogoTemplateLibrary) GetComponent(sn int, category string, name str
 }
 
 func (this *FlogoTemplateLibrary) GetComponentDescriptor(category string, name string) interface{} {
-	log.Debugf("[FlogoTemplateLibrary) GetComponentDescriptor - category = %s", category, ", component = %s ", name)
+	log.Info("(FlogoTemplateLibrary) GetComponentDescriptor - category = %s", category, ", component = %s ", name)
 	if "*" == category {
 		if "*" == name {
 			// category : *, name : * -> all components' properties
@@ -76,7 +76,7 @@ func (this *FlogoTemplateLibrary) GetComponentDescriptor(category string, name s
 }
 
 func NewFlogoTemplateLibrary(folder string) (*FlogoTemplateLibrary, error) {
-	//log.Debug(folder)
+	log.Info("(NewFlogoTemplateLibrary) template folder : ", folder)
 	pipeline, err := NewPipeline("AirPipeline", fmt.Sprintf("%s/pipeline.json", folder))
 	if nil != err {
 		return nil, err
@@ -87,7 +87,7 @@ func NewFlogoTemplateLibrary(folder string) (*FlogoTemplateLibrary, error) {
 	categories, _ := ioutil.ReadDir(folder)
 	for _, category := range categories {
 		if category.IsDir() {
-			log.Debug("Category : ", category.Name())
+			log.Info("(NewFlogoTemplateLibrary) Category : ", category.Name())
 			templates, _ := ioutil.ReadDir(folder + "/" + category.Name())
 			if nil == components[category.Name()] {
 				components[category.Name()] = make(map[string]PipelineComponent)
@@ -95,19 +95,19 @@ func NewFlogoTemplateLibrary(folder string) (*FlogoTemplateLibrary, error) {
 			subflowFileMain := fmt.Sprintf("%s/SubflowEntryMain.json", folder)
 			subflowDataMain, err := FromFile(subflowFileMain)
 			if nil != err {
-				log.Error("Fail to read main subflow data from %s : %v", subflowFileMain, err)
+				log.Error("(NewFlogoTemplateLibrary) Fail to read main subflow data from %s : %v", subflowFileMain, err)
 			}
-			log.Debug("subflowDataMain : ", subflowDataMain)
+			log.Info("(NewFlogoTemplateLibrary) subflowDataMain : ", subflowDataMain)
 			subflowEntryMain := objectbuilder.LocateObject(subflowDataMain, "root.resources[0].data.tasks[0]").(map[string]interface{})
 			subflowFile := fmt.Sprintf("%s/SubflowEntry.json", folder)
 			subflowData, err := FromFile(subflowFile)
 			if nil != err {
-				log.Error("Fail to read subflow data from %s : %v", subflowFile, err)
+				log.Error("(NewFlogoTemplateLibrary) Fail to read subflow data from %s : %v", subflowFile, err)
 			}
 			subflowEntry := objectbuilder.LocateObject(subflowData, "root.resources[0].data.tasks[0]").(map[string]interface{})
 			for _, template := range templates {
 				if template.IsDir() {
-					log.Debug("---- template -> " + template.Name())
+					log.Info("(NewFlogoTemplateLibrary) ---- template -> " + template.Name())
 					filename := fmt.Sprintf("%s/%s/%s/%s.json", folder, category.Name(), template.Name(), template.Name())
 					var component PipelineComponent
 					if "DataSource" == category.Name() {
@@ -121,7 +121,7 @@ func NewFlogoTemplateLibrary(folder string) (*FlogoTemplateLibrary, error) {
 						return nil, err
 					}
 					components[category.Name()][template.Name()] = component
-					//log.Debugf("---- component.GetData() -> %v", component.GetData())
+					log.Infof("(NewFlogoTemplateLibrary) ---- component.GetData() -> %v", component.GetData())
 				}
 			}
 		}
