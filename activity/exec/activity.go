@@ -163,17 +163,6 @@ func (a *ExecActivity) Eval(context activity.Context) (done bool, err error) {
 	log.Info("[ExecActivity.Eval] newEnv : ", newEnv)
 
 	log.Info("(ExecActivity.Eval) iAsynchronous : ", iAsynchronous)
-	eventListener, err := a.getExecEventBroker(context)
-	if nil != err {
-		log.Warn("Unable to find event listener : ", err.Error())
-	}
-
-	execContext := map[string]interface{}{
-		"Variable":          variable,
-		"SystemEnvironment": dynSysEnvs,
-		"Successful":        true,
-		"ErrorMsg":          "",
-	}
 	data := make(map[string]interface{})
 	if iAsynchronous {
 		log.Info("(ExecActivity.Eval) execCommand asynchronously!")
