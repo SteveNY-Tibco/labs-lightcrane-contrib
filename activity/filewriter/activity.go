@@ -17,10 +17,10 @@ import (
 	"strings"
 	"sync"
 
-	kwr "github.com/SteveNY-Tibco/labs-lightcrane-contrib/common/keywordreplace"
-	"github.com/SteveNY-Tibco/labs-lightcrane-contrib/common/util"
 	"github.com/TIBCOSoftware/flogo-lib/core/activity"
 	"github.com/TIBCOSoftware/flogo-lib/logger"
+	kwr "github.com/SteveNY-Tibco/labs-lightcrane-contrib/common/keywordreplace"
+	"github.com/SteveNY-Tibco/labs-lightcrane-contrib/common/util"
 )
 
 const (

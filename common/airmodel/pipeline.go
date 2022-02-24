@@ -10,9 +10,9 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/TIBCOSoftware/flogo-lib/logger"
 	"github.com/SteveNY-Tibco/labs-lightcrane-contrib/common/objectbuilder"
 	"github.com/SteveNY-Tibco/labs-lightcrane-contrib/common/util"
-	"github.com/TIBCOSoftware/flogo-lib/logger"
 )
 
 var log = logger.GetLogger("tibco-f1-pipeline-model")
