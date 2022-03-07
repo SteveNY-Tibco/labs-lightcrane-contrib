@@ -103,11 +103,13 @@ func (a *HTTPClientActivity) Eval(context activity.Context) (done bool, err erro
 	if "" != url {
 		var method interface{}
 		runtimeMethod, ok := context.GetInput(iMethod).(string)
+		log.Debug("[HTTPClientActivity:Eval] Runtime method : ", runtimeMethod)
 		if !ok {
 			method, ok = context.GetSetting(sMethod)
 			if !ok {
 				return false, errors.New("Query method not defined!")
 			}
+			log.Debug("[HTTPClientActivity:Eval] Default method : ", method)
 		} else {
 			method = runtimeMethod
 		}
