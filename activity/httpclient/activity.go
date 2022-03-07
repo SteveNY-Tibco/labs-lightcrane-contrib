@@ -14,10 +14,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/TIBCOSoftware/flogo-lib/core/activity"
-	"github.com/TIBCOSoftware/flogo-lib/logger"
 	kwr "github.com/SteveNY-Tibco/labs-lightcrane-contrib/common/keywordreplace"
 	"github.com/SteveNY-Tibco/labs-lightcrane-contrib/common/util"
+	"github.com/TIBCOSoftware/flogo-lib/core/activity"
+	"github.com/TIBCOSoftware/flogo-lib/logger"
 )
 
 var log = logger.GetLogger("tibco-model-ops-httpclient")
@@ -33,6 +33,7 @@ const (
 	sVariablesDef  = "variablesDef"
 	sHttpHeaders   = "httpHeaders"
 	iURL           = "URL"
+	iMethod        = "Method"
 	iBody          = "Body"
 	iVariable      = "Variables"
 	iSkipCondition = "SkipCondition"
@@ -101,7 +102,7 @@ func (a *HTTPClientActivity) Eval(context activity.Context) (done bool, err erro
 	statusCode := 600
 	if "" != url {
 		var method interface{}
-		runtimeMethod, ok := context.GetInput(sMethod).(string)
+		runtimeMethod, ok := context.GetInput(iMethod).(string)
 		if !ok {
 			method, ok = context.GetSetting(sMethod)
 			if !ok {
